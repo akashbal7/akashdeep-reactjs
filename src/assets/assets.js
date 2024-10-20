@@ -44,6 +44,10 @@ import food_30 from './food_30.png'
 import food_31 from './food_31.png'
 import food_32 from './food_32.png'
 
+import res1 from './res1.jpg'
+import res2 from './res2.jpg'
+import res3 from './res3.jpg'
+
 import add_icon_white from './add_icon_white.png'
 import add_icon_green from './add_icon_green.png'
 import remove_icon_red from './remove_icon_red.png'
@@ -350,3 +354,33 @@ export const food_list = [
         category: "Noodles"
     }
 ]
+
+export const restaurantList = [
+    {
+      _id: "1",
+      name: "The Green Leaf",
+      image: res1,
+      price: 12,
+      description: "A fresh and healthy place offering a variety of salads made from locally sourced ingredients.",
+      category: "Salad"
+    },
+    {
+      _id: "2",
+      name: "Salad Haven",
+      image: res2,
+      price: 18,
+      description: "A popular spot for vegetarians and salad lovers, offering creative and nutritious salad options.",
+      category: "Salad"
+    },
+    {
+      _id: "3",
+      name: "Clover Greens",
+      image: res3,
+      price: 16,
+      description: "A health-conscious restaurant that serves delicious salads and fresh food for a balanced diet.",
+      category: "Salad"
+    }
+  ];
+  
+  
+  
