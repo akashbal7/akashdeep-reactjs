@@ -371,11 +371,36 @@ export const restaurantList = [
       price: 18,
       description: "A popular spot for vegetarians and salad lovers, offering creative and nutritious salad options.",
       category: "Salad"
+    }
+    ,
+    {
+      _id: "3",
+      name: "Clover Greens",
+      image: res2,
+      price: 16,
+      description: "A health-conscious restaurant that serves delicious salads and fresh food for a balanced diet.",
+      category: "Salad"
     },
     {
       _id: "3",
       name: "Clover Greens",
-      image: res3,
+      image: res2,
+      price: 16,
+      description: "A health-conscious restaurant that serves delicious salads and fresh food for a balanced diet.",
+      category: "Salad"
+    },
+    {
+      _id: "3",
+      name: "Clover Greens",
+      image: res2,
+      price: 16,
+      description: "A health-conscious restaurant that serves delicious salads and fresh food for a balanced diet.",
+      category: "Salad"
+    },
+    {
+      _id: "3",
+      name: "Clover Greens",
+      image: res2,
       price: 16,
       description: "A health-conscious restaurant that serves delicious salads and fresh food for a balanced diet.",
       category: "Salad"

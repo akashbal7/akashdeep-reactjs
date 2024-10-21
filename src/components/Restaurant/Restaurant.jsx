@@ -2,6 +2,8 @@ import React, { useContext } from "react";
 import "./Restaurant.css";
 import { assets } from "../../assets/assets";
 import { StoreContext } from "../../context/StoreContext";
+import { Link, useNavigate } from "react-router-dom";
+import Button from "../SmallComponents/Button/Button";
 
 const Restaurant = ({ id, name, price, description, image }) => {
   return (
@@ -15,8 +17,9 @@ const Restaurant = ({ id, name, price, description, image }) => {
           <img src={assets.rating_starts} alt="rating_starts" />
         </div>
         <p className="food-item-desc">{description}</p>
-        
-        <button class="moredetail-button">More Detail</button>
+        <Link to={`/restaurant/${id}`} key={id}>
+          <Button children="More details" />
+          </Link >
       </div>
     </div>
   );

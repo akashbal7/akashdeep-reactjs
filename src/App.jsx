@@ -7,6 +7,7 @@ import PlaceOrder from "./pages/PlaceOrder/PlaceOrder";
 import Footer from "./components/Footer/Footer";
 import LoginPopup from "./components/LoginPopup/LoginPopup";
 import RestaurantList from "./components/RestaurantList/RestaurantList";
+import FoodProfile from "./components/FoodProfile/FoodProfile";
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false);
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="/cart" element={<Cart />} />
           <Route path="/order" element={<PlaceOrder />} />
           <Route path="/restaurants" element={<RestaurantList />} />
+          <Route path="/food/:id" element={<FoodProfile />} />
         </Routes>
       </div>
       <Footer />
