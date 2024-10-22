@@ -3,10 +3,10 @@ import "./FoodDisplay.css";
 import { StoreContext } from "../../context/StoreContext";
 import FoodItem from "../FoodItem/FoodItem";
 
-
 const FoodDisplay = ({ category }) => {
   const { food_list } = useContext(StoreContext);
-  const displayedFoodItems = category === "All" ? food_list.slice(0, 6) : food_list;
+  const displayedFoodItems =
+    category === "All" ? food_list.slice(0, 6) : food_list;
   return (
     <div className="food-display" id="food-display">
       <h2>Top Dishes Near You</h2>
@@ -14,7 +14,6 @@ const FoodDisplay = ({ category }) => {
         {displayedFoodItems.map((item, index) => {
           if (category === "All" || category === item.category) {
             return (
-              
               <FoodItem
                 key={index}
                 id={item._id}

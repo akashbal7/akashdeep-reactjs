@@ -3,6 +3,7 @@ import "./Cart.css";
 import { StoreContext } from "../../context/StoreContext";
 import { useNavigate } from "react-router-dom";
 import { assets } from "../../assets/assets";
+import Button from "../../components/SmallComponents/Button/Button";
 
 export const deliveryFee = 2;
 
@@ -87,12 +88,11 @@ const Cart = () => {
               </b>
             </div>
           </div>
-          <button
+          <Button
+            children="PROCEED TO CHECKOUT"
             disabled={getTotalCartAmount() === 0}
             onClick={() => navigate("/order")}
-          >
-            PROCEED TO CHECKOUT
-          </button>
+          />
         </div>
         <div className="cart-promocode">
           <div>
