@@ -515,4 +515,68 @@ export const restaurantList = [
     paymentMethods: ["Credit Card", "Cash"],
     capacity: 100,
   },
+  {
+    _id: "4",
+    name: "Clover Greens",
+    image: res1,
+    description:
+      "A health-conscious restaurant that serves delicious salads and fresh food for a balanced diet.",
+    address: {
+      line1: "789 Healthy Road",
+      city: "Toronto",
+      state: "ON",
+      postalCode: "M1T 2X3",
+      fullAddress: "789 Healthy Road, Toronto, ON, M1T 2X3",
+    },
+    phone: "321-654-9870",
+    email: "hello@clovergreens.com",
+    website: "https://clovergreens.com",
+    openingHours: {
+      days: "Mon-Sun",
+      hours: "11:00 AM - 10:00 PM",
+    },
+    cuisine: "Salad",
+    services: ["Takeout", "Delivery", "Dine-in"],
+    paymentMethods: ["Credit Card", "Cash"],
+    capacity: 100,
+  },
+];
+
+export const users = [
+  {
+    id: 1,
+    firstName: "John",
+    lastName: "Doe",
+    email: "john.doe@example.com",
+    phoneNumber: "1234567890",
+    role: "CUSTOMER",
+    profileUrl: "https://example.com/profiles/john_doe",
+  },
+  {
+    id: 2,
+    firstName: "Jane",
+    lastName: "Smith",
+    email: "jane.smith@example.com",
+    phoneNumber: "9876543210",
+    role: "OWNER",
+    profileUrl: "https://example.com/profiles/jane_smith",
+  },
+  {
+    id: 3,
+    firstName: "Emily",
+    lastName: "Brown",
+    email: "emily.brown@example.com",
+    phoneNumber: "",
+    role: "CUSTOMER",
+    profileUrl: "https://example.com/profiles/emily_brown",
+  },
+  {
+    id: 4,
+    firstName: "Robert",
+    lastName: "Williams",
+    email: "robert.williams@example.com",
+    phoneNumber: "1231231234",
+    role: "OWNER",
+    profileUrl: "https://example.com/profiles/robert_williams",
+  },
 ];

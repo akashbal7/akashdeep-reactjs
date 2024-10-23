@@ -11,7 +11,6 @@ const Navbar = ({ setShowLogin }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [menu, setMenu] = useState("home");
   const [isOpen, setIsOpen] = useState(false);
-
   // Toggle the dropdown visibility
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -21,6 +20,21 @@ const Navbar = ({ setShowLogin }) => {
     setOpenContactUs(!isContactUsOpen);
   };
 
+  const logoutHandle = () => {
+    // Clear the logged-in users from sessionStorage
+    sessionStorage.removeItem("loginUsers");
+
+    // Optionally, reset any application state or perform additional logout logic here
+    // e.g., redirect to home or show a notification
+
+    // Close the dropdown menu after logout
+    setIsOpen(false);
+    setMenu(""); // Reset menu state if needed
+    alert("You have been logged out."); // Notify the user (optional)
+  };
+
+  const loggedInUser = JSON.parse(sessionStorage.getItem("loginUsers"));
+  console.log("loggedInuser", loggedInUser);
   return (
     <div className="navbar">
       <Link to="/">
@@ -63,39 +77,42 @@ const Navbar = ({ setShowLogin }) => {
             <p>{totalQuantity}</p>
           </div>
         </div>
-        <button onClick={() => setShowLogin(true)}>Sign in</button>
-        <div>
-          <div className="relative inline-block text-left">
-            <FaUserCircle
-              className="text-5xl mt-1 pt-1 text-emerald-600 cursor-pointer text-slate-800"
-              onClick={toggleDropdown}
-            />
+        {!loggedInUser ? (
+          <button onClick={() => setShowLogin(true)}>Sign in</button>
+        ) : (
+          <div>
+            <div className="relative inline-block text-left">
+              <FaUser
+                className="text-3xl text-gray-500 mt-1 pt-1 text-emerald-600 cursor-pointer text-slate-800"
+                onClick={toggleDropdown}
+              />
 
-            {/* Dropdown Menu */}
-            {isOpen && (
-              <div className="absolute  mt-2 w-48 bg-white rounded-md shadow-lg z-10 shadow-slate-300">
-                <Link
-                  to="/user-profile"
-                  onClick={() => {
-                    setIsOpen(false), setMenu("");
-                  }}
-                  className="block px-4 py-2 text-black hover:bg-gray-100"
-                >
-                  Profile
-                </Link>
-                <a
-                  href="#"
-                  onClick={() => {
-                    setIsOpen(false), setMenu("");
-                  }}
-                  className="block px-4 py-2 text-black hover:bg-gray-100"
-                >
-                  Logout
-                </a>
-              </div>
-            )}
+              {/* Dropdown Menu */}
+              {isOpen && (
+                <div className="absolute  mt-2 w-48 bg-white rounded-md shadow-lg z-10 shadow-slate-300">
+                  <Link
+                    to="/user-profile"
+                    onClick={() => {
+                      setIsOpen(false), setMenu("");
+                    }}
+                    className="block px-4 py-2 text-black hover:bg-gray-100"
+                  >
+                    Profile
+                  </Link>
+                  <a
+                    href="#"
+                    onClick={() => {
+                      setIsOpen(false), setMenu(""), logoutHandle();
+                    }}
+                    className="block px-4 py-2 text-black hover:bg-gray-100"
+                  >
+                    Logout
+                  </a>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
