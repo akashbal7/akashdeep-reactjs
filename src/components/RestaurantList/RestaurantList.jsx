@@ -8,7 +8,7 @@ const RestaurantList = ({ category }) => {
   return (
     <div className="food-display" id="food-display">
       <h2>Restaurants</h2>
-      <div className="flex">
+      <div className="grid  grid-cols-4 gap-4">
         {restaurantList.map((item, index) => {
           return (
             <Restaurant

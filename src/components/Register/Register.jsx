@@ -6,9 +6,55 @@ import { assets } from "../../assets/assets";
 const Register = ({ setShowLogin, setShowRegister }) => {
   const [role, setRole] = useState("customer");
 
+  // Form states
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+
+    // Ensure password and confirm password match
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    // Create a new user object
+    const newUser = {
+      id: Date.now(), // Using a timestamp as a unique ID
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      role,
+      password,
+      profileUrl: `https://example.com/profiles/${firstName}_${lastName}`,
+    };
+
+    // Retrieve existing users from local storage
+    const existingUsers = JSON.parse(sessionStorage.getItem("users")) || [];
+
+    // Add new user to the array
+    existingUsers.push(newUser);
+
+    // Save updated users array back to local storage
+    sessionStorage.setItem("users", JSON.stringify(existingUsers));
+
+    // Optionally, clear form fields or show success message
+    alert("Account created successfully!");
+
+    // Hide register form and possibly show login form
+    setShowRegister(false);
+    setShowLogin(true);
+  };
+
   return (
     <div className="login-popup">
-      <form className="login-popup-container">
+      <form className="login-popup-container" onSubmit={handleFormSubmit}>
         <div className="login-popup-title">
           <h2>Sign Up</h2>
           <img
@@ -18,12 +64,47 @@ const Register = ({ setShowLogin, setShowRegister }) => {
           />
         </div>
         <div className="login-popup-inputs">
-          <input type="text" placeholder="First Name" required />
-          <input type="text" placeholder="Last Name" required />
-          <input type="email" placeholder="Your email" required />
-          <input type="password" placeholder="Password" required />
-          <input type="password" placeholder="Confirm Password" required />
-          <input type="tel" placeholder="Phone Number (optional)" />
+          <input
+            type="text"
+            placeholder="First Name"
+            required
+            defaultValue={firstName}
+            onBlur={(e) => setFirstName(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Last Name"
+            required
+            defaultValue={lastName}
+            onBlur={(e) => setLastName(e.target.value)}
+          />
+          <input
+            type="email"
+            placeholder="Your email"
+            required
+            defaultValue={email}
+            onBlur={(e) => setEmail(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            required
+            defaultValue={password}
+            onBlur={(e) => setPassword(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            required
+            defaultValue={confirmPassword}
+            onBlur={(e) => setConfirmPassword(e.target.value)}
+          />
+          <input
+            type="tel"
+            placeholder="Phone Number (optional)"
+            defaultValue={phoneNumber}
+            onBlur={(e) => setPhoneNumber(e.target.value)}
+          />
 
           <div className="role-toggle">
             <label className="customer-lable">
@@ -47,7 +128,12 @@ const Register = ({ setShowLogin, setShowRegister }) => {
           </div>
         </div>
 
-        <button className="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900">Create Account</button>
+        <button
+          type="submit"
+          className="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900"
+        >
+          Create Account
+        </button>
 
         <div className="login-popup-condition">
           <input type="checkbox" required />

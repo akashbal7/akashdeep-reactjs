@@ -8,7 +8,7 @@ import Rating from "../SmallComponents/Rating";
 
 const Restaurant = ({ id, name, description, image }) => {
   return (
-    <div className="food-item mr-5 shadow-slate-300 shadow-lg">
+    <div className="food-item shadow-slate-300 shadow-lg">
       <div className="food-item-img-container">
         <img src={image} alt="image" className="food-item-img" />
       </div>
