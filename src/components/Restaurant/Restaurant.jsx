@@ -13,10 +13,15 @@ const Restaurant = ({ id, name, description, image }) => {
         <img src={image} alt="image" className="food-item-img" />
       </div>
       <div className="food-item-info">
-        <div className="food-item-name-rating">
+        <div className="">
           <p>{name}</p>
         </div>
-        <Rating rating={3} />
+        <div className="text-sm text-gray-500 flex items-center">
+          <span className="mr-2">
+            <Rating rating={4} />
+          </span>{" "}
+          955 reviews
+        </div>
         <p className="food-item-desc">{description}</p>
         <Link to={`/restaurant/${id}`} key={id}>
           <Button children="More details" />

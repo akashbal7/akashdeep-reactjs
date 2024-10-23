@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import ImageComponent from "../SmallComponents/ImageComponent/ImageComponent";
 import Button from "../SmallComponents/Button/Button";
 import { StoreContext } from "../../context/StoreContext";
@@ -6,11 +6,22 @@ import Rating from "../SmallComponents/Rating";
 import { FaPhone, FaLaptop, FaLocationArrow } from "react-icons/fa";
 import EmbeddedMap from "../SmallComponents/EmbeddedMap/EmbeddedMap";
 import { useParams } from "react-router-dom";
+import RatingForm from "../RatingForm";
 
 const RestaurantPage = () => {
   const { id } = useParams();
   const { restaurantList } = useContext(StoreContext);
   const res = restaurantList.find((res) => res._id === id);
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+    console.log("clickeddddddddddddddd");
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
   console.log(res.address);
 
   return (
@@ -48,8 +59,8 @@ const RestaurantPage = () => {
         </div>
       </div>
       <div className="flex mt-4 xl:h-96">
-        <div className="overflow-hidden w-full h-full md:w-1/2">
-          <ImageComponent />
+        <div className="overflow-hidden rounded-2xl shadow-slate-300 shadow-lg w-full h-full md:w-1/2">
+          <ImageComponent className="" />
         </div>
         <div className="w-full h-full md:w-1/2 ml-10 ">
           <div className="p-4 shadow-slate-300 shadow-lg rounded-2xl h-full">
@@ -101,14 +112,14 @@ const RestaurantPage = () => {
               </div>
             </div>
             <div className="flex justify-between mt-4">
-              <Button children="Give Review" />
+              <Button children="Give Review" onClick={handleOpenModal} />
               <Button children="See Reviews" />
             </div>
           </div>
         </div>
 
-        <div className="ml-10 flex-1 md:flex-[0.7]">
-          <div className="p-4 border border-gray-300 h-full  rounded-2xl">
+        <div className="ml-10  flex-1 md:flex-[0.7]">
+          <div className="p-4 shadow-slate-300 shadow-lg  h-full  rounded-2xl">
             <h2 className="text-lg font-semibold">Location and Contact</h2>
             <div className="w-full bg-gray-200 my-2">
               <EmbeddedMap />
@@ -134,6 +145,8 @@ const RestaurantPage = () => {
           </div>
         </div>
       </div>
+      {/* Render the modal only when isModalOpen is true */}
+      {isModalOpen && <RatingForm onClose={handleCloseModal} />}
     </div>
   );
 };

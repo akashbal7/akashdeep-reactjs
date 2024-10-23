@@ -12,6 +12,7 @@ import RestaurantProfile from "./components/RestaurantProfile/RestaurantProfile"
 import RestaurantPage from "./components/Restaurant copy/Restaurant";
 import ContactUs from "./components/ContactUs";
 import UserProfile from "./components/UserProfile";
+import RatingForm from "./components/RatingForm";
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false);
@@ -25,7 +26,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/order" element={<PlaceOrder />} />
-          <Route path="/restaurants" element={<RestaurantList />} />
+          <Route path="/restaurants" element={<RatingForm />} />
           <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/food/:id" element={<FoodCard />} />
           <Route path="/restaurant/:id" element={<RestaurantPage />} />
