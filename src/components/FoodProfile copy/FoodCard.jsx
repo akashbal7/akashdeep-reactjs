@@ -1,23 +1,41 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import "./FoodCard.css";
 import { assets } from "../../assets/assets";
 import { StoreContext } from "../../context/StoreContext";
-import FoodItem from "../FoodItem/FoodItem";
-import Review from "../Review/Review";
 import { useParams } from "react-router-dom";
 import Button from "../SmallComponents/Button/Button";
 import Rating from "../SmallComponents/Rating";
 import ImageComponent from "../SmallComponents/ImageComponent/ImageComponent";
+import SeeReviews from "../SeeReviews";
+import CenterModal from "../SmallComponents/CenterModal";
+import RatingForm from "../RatingForm";
 
 const ProductCard = () => {
   const { id } = useParams();
   const { food_list, cartItems, addToCart, removeFromCart } =
     useContext(StoreContext);
+  const [isGiveReviewModalOpen, setIsGiveReviewModalOpen] = useState(false); // Modal visibility state
+  const [isSeeReviewModalOpen, setIsSeeReviewModalOpen] = useState(false);
   const product = food_list.find((product) => product._id === id);
+
+  const handleOpenGiveReviewModal = () => {
+    setIsGiveReviewModalOpen(true);
+    console.log("clickeddddddddddddddd");
+  };
+
+  const handleOpenSeeReviewModal = () => {
+    setIsSeeReviewModalOpen(true);
+    console.log("clickeddddddddddddddd");
+  };
+
+  const handleCloseModal = () => {
+    setIsGiveReviewModalOpen(false);
+    setIsSeeReviewModalOpen(false);
+  };
   return (
     <div className="bg-white p-4 rounded-lg shadow-lg max-w-6xl mx-auto">
       <div className="flex mb-4 flex-col md:flex-row">
-        <div className="flex-1 md:flex-[0.6] overflow-hidden w-full h-full md:w-1/2">
+        <div className="flex-1 flex-[0.6] rounded-2xl overflow-hidden w-full h-full md:w-1/2 shadow-slate-300 shadow-lg">
           <ImageComponent />
         </div>
 
@@ -48,7 +66,7 @@ const ProductCard = () => {
           </div>
 
           <div className="">
-            <div className="bg-gray-100 p-2 rounded-lg border shadow-lg">
+            <div className="bg-gray-100 p-2 rounded-2xl shadow-slate-300 shadow-lg">
               <h3 className="text-xl font-semibold">Nutrition Facts</h3>
               <p className="text-sm text-gray-600">Serving Size about 82g</p>
 
@@ -114,7 +132,7 @@ const ProductCard = () => {
       </div>
 
       <div className="flex">
-        <div className="p-4 border flex-1 md:flex-[0.3] rounded-2xl border-gray-300 h-full">
+        <div className="p-4 border flex-1 md:flex-[0.3] rounded-2xl shadow-slate-300 shadow-lg h-full">
           <h2 className="text-lg font-semibold">Rating and Reviews</h2>
 
           <div className="flex justify-start">
@@ -140,11 +158,22 @@ const ProductCard = () => {
             </div>
           </div>
           <div className="flex justify-between mt-4">
-            <Button children="Give Review" />
-            <Button children="See Reviews" />
+            <Button
+              onClick={handleOpenGiveReviewModal}
+              children="Give Review"
+            />
+            <Button onClick={handleOpenSeeReviewModal} children="See Reviews" />
           </div>
         </div>
       </div>
+      {isGiveReviewModalOpen && (
+        <CenterModal
+          children={<RatingForm reviewType="food" onClose={handleCloseModal} />}
+        />
+      )}
+      {isSeeReviewModalOpen && (
+        <CenterModal children={<SeeReviews onClose={handleCloseModal} />} />
+      )}
     </div>
   );
 };

@@ -3,24 +3,34 @@ import ImageComponent from "../SmallComponents/ImageComponent/ImageComponent";
 import Button from "../SmallComponents/Button/Button";
 import { StoreContext } from "../../context/StoreContext";
 import Rating from "../SmallComponents/Rating";
-import { FaPhone, FaLaptop, FaLocationArrow } from "react-icons/fa";
+import { FaPhone, FaLaptop, FaLocationArrow, FaUtensils } from "react-icons/fa";
 import EmbeddedMap from "../SmallComponents/EmbeddedMap/EmbeddedMap";
 import { useParams } from "react-router-dom";
 import RatingForm from "../RatingForm";
+import CenterModal from "../SmallComponents/CenterModal";
+import Reviews from "../Review";
+import SeeReviews from "../SeeReviews";
 
 const RestaurantPage = () => {
   const { id } = useParams();
   const { restaurantList } = useContext(StoreContext);
   const res = restaurantList.find((res) => res._id === id);
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
+  const [isGiveReviewModalOpen, setIsGiveReviewModalOpen] = useState(false); // Modal visibility state
+  const [isSeeReviewModalOpen, setIsSeeReviewModalOpen] = useState(false);
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
+  const handleOpenGiveReviewModal = () => {
+    setIsGiveReviewModalOpen(true);
+    console.log("clickeddddddddddddddd");
+  };
+
+  const handleOpenSeeReviewModal = () => {
+    setIsSeeReviewModalOpen(true);
     console.log("clickeddddddddddddddd");
   };
 
   const handleCloseModal = () => {
-    setIsModalOpen(false);
+    setIsGiveReviewModalOpen(false);
+    setIsSeeReviewModalOpen(false);
   };
   console.log(res.address);
 
@@ -78,8 +88,15 @@ const RestaurantPage = () => {
               <h3 className="font-bold mt-4">Sitting Capacity</h3>
               <p>{res.capacity}</p>
 
-              <h3 className="font-bold mt-4">Meals</h3>
-              <p>{res.meals}</p>
+              <button
+                type="button"
+                className="rounded-xl mt-6 text-sm px-5 py-2.5 text-gray-900 shadow-slate-300 shadow-lg bg-white border border-emerald-400 focus:outline-none hover:bg-emerald-100"
+              >
+                <span className="flex">
+                  <FaUtensils className="mr-1 mt-1 pb-1" />{" "}
+                  <span>View Menu</span>
+                </span>
+              </button>
             </div>
           </div>
         </div>
@@ -112,8 +129,14 @@ const RestaurantPage = () => {
               </div>
             </div>
             <div className="flex justify-between mt-4">
-              <Button children="Give Review" onClick={handleOpenModal} />
-              <Button children="See Reviews" />
+              <Button
+                children="Give Review"
+                onClick={handleOpenGiveReviewModal}
+              />
+              <Button
+                children="See Reviews"
+                onClick={handleOpenSeeReviewModal}
+              />
             </div>
           </div>
         </div>
@@ -145,8 +168,17 @@ const RestaurantPage = () => {
           </div>
         </div>
       </div>
-      {/* Render the modal only when isModalOpen is true */}
-      {isModalOpen && <RatingForm onClose={handleCloseModal} />}
+      {/* Render the modal only when isGiveReviewModalOpen is true */}
+      {isGiveReviewModalOpen && (
+        <CenterModal
+          children={
+            <RatingForm reviewType="restaurant" onClose={handleCloseModal} />
+          }
+        />
+      )}
+      {isSeeReviewModalOpen && (
+        <CenterModal children={<SeeReviews onClose={handleCloseModal} />} />
+      )}
     </div>
   );
 };

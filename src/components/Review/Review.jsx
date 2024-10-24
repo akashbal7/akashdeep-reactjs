@@ -3,7 +3,7 @@ import "./Review.css";
 import { StoreContext } from "../../context/StoreContext";
 
 
-const Review = () => {
+const Review = (reviewType) => {
   const [rating, setRating] = useState(0);
   const [opinion, setOpinion] = useState('');
 

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { FaStar } from "react-icons/fa";
+import Button from "./SmallComponents/Button/Button";
 
-const RatingForm = ({ onClose }) => {
+const RatingForm = ({ onClose, reviewType }) => {
   // State to handle ratings and review text
   const [ratings, setRatings] = useState({
     overall: 0,
@@ -26,7 +27,7 @@ const RatingForm = ({ onClose }) => {
     return [...Array(5)].map((_, index) => (
       <span
         key={index}
-        className={`cursor-pointer text-3xl ${
+        className={`cursor-pointer text-2xl ${
           index < rating ? "text-yellow-400" : "text-gray-300"
         }`}
         onClick={() => handleRating(category, index + 1)}
@@ -59,7 +60,7 @@ const RatingForm = ({ onClose }) => {
   };
 
   return (
-    <div className="p-6 max-w-lg mx-auto bg-white rounded-2xl shadow-md">
+    <div className="p-6 w-96 bg-white rounded-2xl shadow-md">
       <h2 className="text-2xl font-bold mb-4">Rate Your Experience</h2>
 
       <form onSubmit={handleSubmit}>
@@ -67,26 +68,28 @@ const RatingForm = ({ onClose }) => {
         <div className="flex justify-center mb-4">
           {renderStars("overall", ratings.overall)}
         </div>
+        {reviewType === "food" && (
+          <div>
+            <div className="mb-4 flex justify-between">
+              <label className="block text-mg font-semibold">Food</label>
+              <div className="flex">{renderStars("food", ratings.food)}</div>
+            </div>
 
-        {/* Food Rating */}
-        <div className="mb-4 flex justify-between">
-          <label className="block text-lg font-semibold">Food</label>
-          <div className="flex">{renderStars("food", ratings.food)}</div>
-        </div>
+            <div className="mb-4 flex justify-between">
+              <label className="block text-lg font-semibold">Service</label>
+              <div className="flex">
+                {renderStars("service", ratings.service)}
+              </div>
+            </div>
 
-        {/* Service Rating */}
-        <div className="mb-4 flex justify-between">
-          <label className="block text-lg font-semibold">Service</label>
-          <div className="flex">{renderStars("service", ratings.service)}</div>
-        </div>
-
-        {/* Atmosphere Rating */}
-        <div className="mb-4 flex justify-between">
-          <label className="block text-lg font-semibold">Atmosphere</label>
-          <div className="flex">
-            {renderStars("atmosphere", ratings.atmosphere)}
+            <div className="mb-4 flex justify-between">
+              <label className="block text-lg font-semibold">Atmosphere</label>
+              <div className="flex">
+                {renderStars("atmosphere", ratings.atmosphere)}
+              </div>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Review Text Area */}
         <div className="mb-4">
@@ -101,31 +104,25 @@ const RatingForm = ({ onClose }) => {
 
         {/* Action Buttons */}
         <div className="flex justify-between">
-          <button
+          <Button type="submit" children={`${"   "}Post${"   "}`} />
+          <Button
             type="button"
-            className="bg-gray-300 text-gray-600 py-2 px-4 rounded-md"
+            className="text-white bg-yellow-400 hover:bg-yellow-500"
             onClick={() => {
               // Reset form if cancel is clicked
               setRatings({ overall: 0, food: 0, service: 0, atmosphere: 0 });
               setReviewText("");
               onClose(); // Clear review text
             }}
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
-          >
-            Post
-          </button>
+            children="Cancel"
+          />
         </div>
       </form>
 
       {/* Optionally show a confirmation message */}
       {formSubmitted && (
         <div className="mt-4 text-green-500 font-semibold">
-          Thank you for your review!
+          Thank you for your {"   "} review!
         </div>
       )}
     </div>

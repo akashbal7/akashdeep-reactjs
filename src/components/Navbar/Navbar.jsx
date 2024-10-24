@@ -3,6 +3,7 @@ import { StoreContext } from "../../context/StoreContext";
 import "./Navbar.css";
 import { assets } from "../../assets/assets";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FaUserCircle, FaUser, FaShoppingCart } from "react-icons/fa";
 
 const Navbar = ({ setShowLogin }) => {
@@ -11,6 +12,7 @@ const Navbar = ({ setShowLogin }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [menu, setMenu] = useState("home");
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
   // Toggle the dropdown visibility
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -31,6 +33,7 @@ const Navbar = ({ setShowLogin }) => {
     setIsOpen(false);
     setMenu(""); // Reset menu state if needed
     alert("You have been logged out."); // Notify the user (optional)
+    navigate("/");
   };
 
   const loggedInUser = JSON.parse(sessionStorage.getItem("loginUsers"));
@@ -38,7 +41,10 @@ const Navbar = ({ setShowLogin }) => {
   return (
     <div className="navbar">
       <Link to="/">
-        <img src={assets.logo} alt="logo" className="logo" />
+        {/* <img src={assets.logo_set2go} alt="logo" className="logo" /> */}
+        <span className="text-emerald-400 text-2xl font-bold">SET</span>
+        <span className="text-orange-400 text-4xl font-extrabold">2</span>
+        <span className="text-emerald-400 text-2xl font-bold">GO</span>
       </Link>
       <ul className="navbar-menu">
         <Link
