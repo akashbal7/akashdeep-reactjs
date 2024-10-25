@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Button from "../SmallComponents/Button/Button";
 import { useNavigate } from "react-router-dom";
+import Address from "./Address";
 
-const CustomerProfile = ({ loggedInUser }) => {
+const RestaurantOwnerProfile = ({ loggedInUser }) => {
   const [user, setUser] = useState({
     username: "",
     firstName: "",
@@ -12,6 +13,8 @@ const CustomerProfile = ({ loggedInUser }) => {
     // Initialize any other fields you have
   });
   const navigate = useNavigate();
+
+  const restaurant = {};
 
   useEffect(() => {
     // Fetch users from local storage
@@ -66,45 +69,17 @@ const CustomerProfile = ({ loggedInUser }) => {
     alert("Profile updated successfully!");
   };
   return (
-    <div className=" bg-white md:flex-[0.7] shadow rounded-lg p-6">
-      <h2 className="text-gray-700 text-2xl mb-4">Account Details</h2>
-      <form className="space-y-4" onSubmit={handleSaveChanges}>
+    <div className="bg-white shadow-lg rounded-lg p-6">
+      <h2 className="text-gray-700 text-2xl mb-4">Restaurant Details</h2>
+      <form className="space-y-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              First name
+              Restaurant Name
             </label>
             <input
               type="text"
-              name="firstName"
-              value={user ? user.firstName : ""}
-              placeholder="First name"
-              onChange={handleChange}
-              className="mt-1 p-2 w-full border rounded"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Last name
-            </label>
-            <input
-              type="text"
-              name="lastName"
-              placeholder="Last name"
-              onChange={handleChange}
-              value={user ? user.lastName : ""}
-              className="mt-1 p-2 w-full border rounded"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Location
-            </label>
-            <input
-              type="text"
-              name="location"
-              placeholder="Location"
-              value={user ? user.location : ""}
+              value={restaurant ? restaurant?.name : ""}
               onChange={handleChange}
               className="mt-1 p-2 w-full border rounded"
             />
@@ -112,35 +87,102 @@ const CustomerProfile = ({ loggedInUser }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Email address
+              About
             </label>
-            <input
-              type="email"
-              value={user ? user.email : ""}
+            <textarea
+              value={restaurant ? restaurant?.description : ""}
               onChange={handleChange}
-              name="email"
-              placeholder="name@example.com"
               className="mt-1 p-2 w-full border rounded"
+              rows="1"
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Phone number
+              Phone
             </label>
             <input
               type="tel"
-              name="phoneNumber"
-              value={user ? user.phoneNumber : ""}
+              value={restaurant ? restaurant?.phone : ""}
               onChange={handleChange}
-              placeholder="555-123-4567"
+              className="mt-1 p-2 w-full border rounded"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
+            <input
+              type="email"
+              disabled
+              value={restaurant ? restaurant?.email : ""}
+              className="mt-1 p-2 w-full border rounded"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Website
+            </label>
+            <input
+              type="url"
+              value={restaurant ? restaurant?.website : ""}
+              onChange={handleChange}
+              className="mt-1 p-2 w-full border rounded"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Opening Hours
+            </label>
+            <input
+              type="text"
+              onChange={handleChange}
+              value={`${
+                restaurant && restaurant?.openingHours
+                  ? restaurant?.openingHours?.days
+                  : ""
+              } ${
+                restaurant && restaurant?.openingHours
+                  ? restaurant.openingHours?.hours
+                  : ""
+              }`}
+              className="mt-1 p-2 w-full border rounded"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Cuisine
+            </label>
+            <input
+              type="text"
+              value={restaurant ? restaurant?.cuisine : ""}
+              onChange={handleChange}
+              className="mt-1 p-2 w-full border rounded"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Sitting Capacity
+            </label>
+            <input
+              type="text"
+              value={restaurant ? restaurant?.capacity : ""}
+              onChange={handleChange}
               className="mt-1 p-2 w-full border rounded"
             />
           </div>
         </div>
-        <Button type="submit" children="Save changes" />
+        <Button type="button" children="Edit Profile" />
       </form>
+      <div>
+        <Address />
+      </div>
     </div>
   );
 };
 
-export default CustomerProfile;
+export default RestaurantOwnerProfile;

@@ -20,7 +20,6 @@ const Register = ({ setShowLogin, setShowRegister }) => {
   const handleToggleChange = () => {
     setIsToggleEnabled((prevState) => {
       const newState = !prevState;
-      alert(`Toggle is now ${newState ? "enabled" : "disabled"}`);
       return newState;
     });
   };

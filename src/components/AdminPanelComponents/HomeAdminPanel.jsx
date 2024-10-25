@@ -6,12 +6,16 @@ import FoodItem from "../FoodItem/FoodItem";
 import FoodItemTable from "./FoodItemTable";
 import ReviewTable from "./ReviewTable";
 import Button from "../SmallComponents/Button/Button";
+import OrderHistoryTable from "./OrderHistoryTable";
+import RestaurantOwnerProfile from "./RestaurantOwnerProfile";
+import AddFoodItemForm from "./AddFoodItemForm";
+import AddCuisineForm from "./AddCuisineForm";
 
 const HomeAdminPanel = () => {
   const loggedInUser = JSON.parse(sessionStorage.getItem("loginUser"));
   const role = loggedInUser?.role;
-  const [showActiveSidebarTab, setShowActiveSidebarTab] = useState("dashboard");
-  const [showAddItemButton, setShowAddItemButton] = useState(false);
+  const [showActiveSidebarTab, setShowActiveSidebarTab] = useState("1");
+  const [showAddItemForm, setShowAddItemForm] = useState(false);
   const defaultClassWithTextBlack =
     "flex items-center gap-2 border-b pl-6 py-2 cursor-pointer";
   const defaultClassWithTextBlue =
@@ -32,41 +36,59 @@ const HomeAdminPanel = () => {
           <ul className="">
             <li
               className={
-                showActiveSidebarTab == "dashboard"
+                showActiveSidebarTab == "1"
                   ? defaultClassWithTextBlue
                   : defaultClassWithTextBlack
               }
-              onClick={() => setShowActiveSidebarTab("dashboard")}
+              onClick={() => setShowActiveSidebarTab("1")}
             >
               <span className="material-icons"></span> Dashboard
             </li>
             <li
               className={
-                showActiveSidebarTab == "cuisines"
+                showActiveSidebarTab == "2"
                   ? defaultClassWithTextBlue
                   : defaultClassWithTextBlack
               }
-              onClick={() => setShowActiveSidebarTab("cuisines")}
+              onClick={() => {
+                setShowActiveSidebarTab("2"), setShowAddItemForm(false);
+              }}
+            >
+              <span className="material-icons"></span> Profile
+            </li>
+            <li
+              className={
+                showActiveSidebarTab == "3"
+                  ? defaultClassWithTextBlue
+                  : defaultClassWithTextBlack
+              }
+              onClick={() => {
+                setShowActiveSidebarTab("3"), setShowAddItemForm(false);
+              }}
             >
               <span className="material-icons"></span> Cuisines
             </li>
             <li
               className={
-                showActiveSidebarTab == "fooditems"
+                showActiveSidebarTab == "4"
                   ? defaultClassWithTextBlue
                   : defaultClassWithTextBlack
               }
-              onClick={() => setShowActiveSidebarTab("fooditems")}
+              onClick={() => {
+                setShowActiveSidebarTab("4"), setShowAddItemForm(false);
+              }}
             >
               <span className="material-icons"></span> Food Items
             </li>
             <li
               className={
-                showActiveSidebarTab == "reviews"
+                showActiveSidebarTab == "5"
                   ? defaultClassWithTextBlue
                   : defaultClassWithTextBlack
               }
-              onClick={() => setShowActiveSidebarTab("reviews")}
+              onClick={() => {
+                setShowActiveSidebarTab("5"), setShowAddItemForm(false);
+              }}
             >
               <span className="material-icons"></span> Reviews
             </li>
@@ -75,21 +97,31 @@ const HomeAdminPanel = () => {
           <ul>
             <li
               className={
-                showActiveSidebarTab == "dashboard"
+                showActiveSidebarTab == "1"
                   ? defaultClassWithTextBlue
                   : defaultClassWithTextBlack
               }
-              onClick={() => setShowActiveSidebarTab("dashboard")}
+              onClick={() => setShowActiveSidebarTab("1")}
+            >
+              <span className="material-icons"></span> Dashboard
+            </li>
+            <li
+              className={
+                showActiveSidebarTab == "2"
+                  ? defaultClassWithTextBlue
+                  : defaultClassWithTextBlack
+              }
+              onClick={() => setShowActiveSidebarTab("2")}
             >
               <span className="material-icons"></span> Profile
             </li>
             <li
               className={
-                showActiveSidebarTab == "cuisines"
+                showActiveSidebarTab == "3"
                   ? defaultClassWithTextBlue
                   : defaultClassWithTextBlack
               }
-              onClick={() => setShowActiveSidebarTab("cuisines")}
+              onClick={() => setShowActiveSidebarTab("3")}
             >
               <span className="material-icons"></span> Order History
             </li>
@@ -99,38 +131,66 @@ const HomeAdminPanel = () => {
 
       {/* Main Content */}
       <div className="w-4/5 p-4">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-4">
-          <input
-            type="text"
-            placeholder="Search here..."
-            className="border border-gray-300 rounded-md p-2 w-1/2"
-          />
-          {showActiveSidebarTab === "dashboard" ? (
-            <></>
-          ) : (
-            <Button children="Add Item" />
-          )}
-        </div>
-
-        {/* Recent Activity */}
-
-        {role === "restaurant_owner" ? (
-          <div className="">
-            {showActiveSidebarTab === "dashboard" ? (
-              <Dashboard />
-            ) : showActiveSidebarTab === "cuisines" ? (
-              <Cuisines />
-            ) : showActiveSidebarTab === "fooditems" ? (
-              <FoodItemTable />
-            ) : showActiveSidebarTab === "reviews" ? (
-              <ReviewTable />
+        {showAddItemForm ||
+        showActiveSidebarTab === "1" ||
+        showActiveSidebarTab === "2" ? (
+          <></>
+        ) : (
+          <div className="flex justify-between items-center mb-4">
+            <input
+              type="text"
+              placeholder="Search here..."
+              className="border border-gray-300 rounded-md p-2 w-1/2"
+            />
+            {showActiveSidebarTab !== "5" ? (
+              <Button
+                onClick={() => {
+                  setShowAddItemForm(true);
+                }}
+                children="Add Item"
+              />
             ) : (
               <></>
             )}
           </div>
+        )}
+
+        {!showAddItemForm ? (
+          role === "restaurant_owner" ? (
+            <div className="">
+              {showActiveSidebarTab === "1" ? (
+                <Dashboard />
+              ) : showActiveSidebarTab === "2" ? (
+                <RestaurantOwnerProfile loggedInUser={loggedInUser} />
+              ) : showActiveSidebarTab === "3" ? (
+                <Cuisines />
+              ) : showActiveSidebarTab === "4" ? (
+                <FoodItemTable />
+              ) : showActiveSidebarTab === "5" ? (
+                <ReviewTable />
+              ) : (
+                <></>
+              )}
+            </div>
+          ) : (
+            <div className="">
+              {showActiveSidebarTab === "1" ? (
+                <Dashboard />
+              ) : showActiveSidebarTab === "2" ? (
+                <CustomerProfile loggedInUser={loggedInUser} />
+              ) : showActiveSidebarTab === "3" ? (
+                <OrderHistoryTable />
+              ) : (
+                <></>
+              )}
+            </div>
+          )
+        ) : showActiveSidebarTab === "3" ? (
+          <AddCuisineForm children="Add Cuisine" />
+        ) : showActiveSidebarTab === "4" ? (
+          <AddFoodItemForm children="Add Food Item" />
         ) : (
-          <CustomerProfile loggedInUser={loggedInUser} />
+          <></>
         )}
       </div>
     </div>
