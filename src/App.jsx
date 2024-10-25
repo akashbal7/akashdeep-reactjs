@@ -13,15 +13,14 @@ import RestaurantPage from "./components/Restaurant copy/Restaurant";
 import ContactUs from "./components/ContactUs";
 import UserProfile from "./components/UserProfile";
 import RatingForm from "./components/RatingForm";
+import CenterModal from "./components/SmallComponents/CenterModal";
 
 const App = () => {
-  const [showLogin, setShowLogin] = useState(false);
   const [isContactUsOpen, setOpenContactUs] = useState(false);
   return (
     <>
-      {showLogin ? <LoginPopup setShowLogin={setShowLogin} /> : <></>}
       <div className="app">
-        <Navbar setShowLogin={setShowLogin} />
+        <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cart" element={<Cart />} />

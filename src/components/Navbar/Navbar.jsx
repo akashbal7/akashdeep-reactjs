@@ -5,21 +5,20 @@ import { assets } from "../../assets/assets";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { FaUserCircle, FaUser, FaShoppingCart } from "react-icons/fa";
+import CenterModal from "../SmallComponents/CenterModal";
+import LoginPopup from "../LoginPopup/LoginPopup";
 
-const Navbar = ({ setShowLogin }) => {
+const Navbar = () => {
   const { getTotalQuantity } = useContext(StoreContext);
   const totalQuantity = getTotalQuantity();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [menu, setMenu] = useState("home");
   const [isOpen, setIsOpen] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
   const navigate = useNavigate();
   // Toggle the dropdown visibility
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
-  };
-
-  const toggleContectUs = () => {
-    setOpenContactUs(!isContactUsOpen);
   };
 
   const logoutHandle = () => {
@@ -120,6 +119,11 @@ const Navbar = ({ setShowLogin }) => {
           </div>
         )}
       </div>
+      {showLogin ? (
+        <CenterModal children={<LoginPopup setShowLogin={setShowLogin} />} />
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

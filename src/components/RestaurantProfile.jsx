@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Button from "./SmallComponents/Button/Button";
 import { useNavigate } from "react-router-dom";
 
-const UserProfile = () => {
+const RestaurantProfile = () => {
   const [user, setUser] = useState({
     username: "",
     firstName: "",
@@ -17,7 +17,7 @@ const UserProfile = () => {
 
   useEffect(() => {
     // Fetch users from local storage
-    const loggedInUser = JSON.parse(sessionStorage.getItem("loginUsers"));
+    const loggedInUser = JSON.parse(sessionStorage.getItem("loginUsers")) || [];
     console.log("loggedInUser" + loggedInUser);
     const usersDetail = JSON.parse(sessionStorage.getItem("users")) || [];
     console.log(loggedInUser.email);
@@ -170,4 +170,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default RestaurantProfile;

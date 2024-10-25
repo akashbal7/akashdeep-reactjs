@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import "./FoodCard.css";
 import { assets } from "../../assets/assets";
 import { StoreContext } from "../../context/StoreContext";
@@ -16,7 +16,31 @@ const ProductCard = () => {
     useContext(StoreContext);
   const [isGiveReviewModalOpen, setIsGiveReviewModalOpen] = useState(false); // Modal visibility state
   const [isSeeReviewModalOpen, setIsSeeReviewModalOpen] = useState(false);
+  const modalRef = useRef(null);
   const product = food_list.find((product) => product._id === id);
+
+  // Function to close the modal when clicking outside
+  const handleClickOutside = (event) => {
+    console.log("clickeddddddddddddddd handleClickOutside");
+    if (modalRef.current && !modalRef.current.contains(event.target)) {
+      setIsGiveReviewModalOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isGiveReviewModalOpen) {
+      // Add event listener when modal is opened
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      // Remove event listener when modal is closed
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isGiveReviewModalOpen]);
 
   const handleOpenGiveReviewModal = () => {
     setIsGiveReviewModalOpen(true);
@@ -168,7 +192,13 @@ const ProductCard = () => {
       </div>
       {isGiveReviewModalOpen && (
         <CenterModal
-          children={<RatingForm reviewType="food" onClose={handleCloseModal} />}
+          children={
+            <RatingForm
+              ref={modalRef}
+              reviewType="food"
+              onClose={handleCloseModal}
+            />
+          }
         />
       )}
       {isSeeReviewModalOpen && (

@@ -1,7 +1,7 @@
 // Register.js
 import React, { useState } from "react";
-import "./Register.css";
 import { assets } from "../../assets/assets";
+import Button from "../SmallComponents/Button/Button";
 
 const Register = ({ setShowLogin, setShowRegister }) => {
   const [role, setRole] = useState("customer");
@@ -53,23 +53,31 @@ const Register = ({ setShowLogin, setShowRegister }) => {
   };
 
   return (
-    <div className="login-popup">
-      <form className="login-popup-container" onSubmit={handleFormSubmit}>
-        <div className="login-popup-title">
-          <h2>Sign Up</h2>
+    <div>
+      <form
+        className="w-96 bg-white text-gray-500 flex flex-col gap-6 p-6 rounded-2xl"
+        onSubmit={handleFormSubmit}
+      >
+        <div className="flex justify-between items-center text-gray-800">
+          <h2 className="text-lg font-semibold">Sign Up</h2>
           <img
             src={assets.cross_icon}
             alt="cross_icon"
-            onClick={() => setShowRegister(false)}
+            className="w-4 cursor-pointer"
+            onClick={() => {
+              setShowRegister(false), setShowLogin(false);
+            }}
           />
         </div>
-        <div className="login-popup-inputs">
+
+        <div className="flex flex-col gap-5">
           <input
             type="text"
             placeholder="First Name"
             required
             defaultValue={firstName}
             onBlur={(e) => setFirstName(e.target.value)}
+            className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring focus:border-blue-300"
           />
           <input
             type="text"
@@ -77,6 +85,7 @@ const Register = ({ setShowLogin, setShowRegister }) => {
             required
             defaultValue={lastName}
             onBlur={(e) => setLastName(e.target.value)}
+            className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring focus:border-blue-300"
           />
           <input
             type="email"
@@ -84,6 +93,7 @@ const Register = ({ setShowLogin, setShowRegister }) => {
             required
             defaultValue={email}
             onBlur={(e) => setEmail(e.target.value)}
+            className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring focus:border-blue-300"
           />
           <input
             type="password"
@@ -91,6 +101,7 @@ const Register = ({ setShowLogin, setShowRegister }) => {
             required
             defaultValue={password}
             onBlur={(e) => setPassword(e.target.value)}
+            className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring focus:border-blue-300"
           />
           <input
             type="password"
@@ -98,51 +109,52 @@ const Register = ({ setShowLogin, setShowRegister }) => {
             required
             defaultValue={confirmPassword}
             onBlur={(e) => setConfirmPassword(e.target.value)}
+            className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring focus:border-blue-300"
           />
           <input
             type="tel"
             placeholder="Phone Number (optional)"
             defaultValue={phoneNumber}
             onBlur={(e) => setPhoneNumber(e.target.value)}
+            className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring focus:border-blue-300"
           />
 
-          <div className="role-toggle">
-            <label className="customer-lable">
+          <div className="flex gap-4">
+            <label className="flex items-center space-x-2">
               <input
                 type="radio"
                 value="customer"
                 checked={role === "customer"}
                 onChange={() => setRole("customer")}
+                className="focus:ring-blue-300"
               />
-              Customer
+              <span>Customer</span>
             </label>
-            <label>
+            <label className="flex items-center space-x-2">
               <input
                 type="radio"
                 value="restaurant_owner"
                 checked={role === "restaurant_owner"}
                 onChange={() => setRole("restaurant_owner")}
+                className="focus:ring-blue-300"
               />
-              Restaurant Owner
+              <span>Restaurant Owner</span>
             </label>
           </div>
         </div>
 
-        <button
-          type="submit"
-          className="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900"
-        >
-          Create Account
-        </button>
+        <Button type="submit" children="Create Account" />
 
-        <div className="login-popup-condition">
-          <input type="checkbox" required />
-          <p>By continuing, I agree to the terms of use & privacy policy</p>
-        </div>
-
-        <p>
+        <p className="text-sm">
           Already have an account?{" "}
-          <span onClick={() => setShowLogin(true)}>Login here</span>
+          <span
+            className="text-blue-600 font-semibold cursor-pointer"
+            onClick={() => {
+              setShowRegister(false);
+            }}
+          >
+            Login here
+          </span>
         </p>
       </form>
     </div>

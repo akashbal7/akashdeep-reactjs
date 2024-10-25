@@ -6,6 +6,11 @@ import Register from "../Register/Register";
 const LoginPopup = ({ setShowLogin }) => {
   const [isRegister, setIsRegister] = useState(false);
 
+  {
+    console.log("rendereeeeeeeeeeeeeeee");
+    console.log("login", setShowLogin);
+    console.log("register", isRegister);
+  }
   return (
     <>
       {isRegister ? (

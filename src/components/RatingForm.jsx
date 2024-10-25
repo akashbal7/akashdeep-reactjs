@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef } from "react";
 import { FaStar } from "react-icons/fa";
 import Button from "./SmallComponents/Button/Button";
 
-const RatingForm = ({ onClose, reviewType }) => {
+const RatingForm = forwardRef(({ onClose, reviewType }, modalRef) => {
   // State to handle ratings and review text
   const [ratings, setRatings] = useState({
     overall: 0,
@@ -60,7 +60,7 @@ const RatingForm = ({ onClose, reviewType }) => {
   };
 
   return (
-    <div className="p-6 w-96 bg-white rounded-2xl shadow-md">
+    <div className="p-6 w-96 bg-white rounded-2xl shadow-md" ref={modalRef}>
       <h2 className="text-2xl font-bold mb-4">Rate Your Experience</h2>
 
       <form onSubmit={handleSubmit}>
@@ -127,6 +127,6 @@ const RatingForm = ({ onClose, reviewType }) => {
       )}
     </div>
   );
-};
+});
 
 export default RatingForm;
