@@ -5,11 +5,13 @@ import Cuisines from "./Cuisines";
 import FoodItem from "../FoodItem/FoodItem";
 import FoodItemTable from "./FoodItemTable";
 import ReviewTable from "./ReviewTable";
+import Button from "../SmallComponents/Button/Button";
 
 const HomeAdminPanel = () => {
   const loggedInUser = JSON.parse(sessionStorage.getItem("loginUser"));
   const role = loggedInUser?.role;
   const [showActiveSidebarTab, setShowActiveSidebarTab] = useState("dashboard");
+  const [showAddItemButton, setShowAddItemButton] = useState(false);
   const defaultClassWithTextBlack =
     "flex items-center gap-2 border-b pl-6 py-2 cursor-pointer";
   const defaultClassWithTextBlue =
@@ -104,6 +106,11 @@ const HomeAdminPanel = () => {
             placeholder="Search here..."
             className="border border-gray-300 rounded-md p-2 w-1/2"
           />
+          {showActiveSidebarTab === "dashboard" ? (
+            <></>
+          ) : (
+            <Button children="Add Item" />
+          )}
         </div>
 
         {/* Recent Activity */}
