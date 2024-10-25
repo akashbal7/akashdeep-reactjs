@@ -32,12 +32,13 @@ const Login = ({ setShowLogin, setShowRegister }) => {
       email: email,
       password: password,
       isLogedIn: true,
+      role: user.role,
     };
 
     // Add new user to the array
 
     // Save updated users array back to local storage
-    sessionStorage.setItem("loginUsers", JSON.stringify(createLogin));
+    sessionStorage.setItem("loginUser", JSON.stringify(createLogin));
     setEmail("");
     setPassword("");
     setError(""); //

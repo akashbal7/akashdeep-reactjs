@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import ImageComponent from "../SmallComponents/ImageComponent/ImageComponent";
 import Button from "../SmallComponents/Button/Button";
 import { StoreContext } from "../../context/StoreContext";
@@ -17,6 +17,16 @@ const RestaurantPage = () => {
   const res = restaurantList.find((res) => res._id === id);
   const [isGiveReviewModalOpen, setIsGiveReviewModalOpen] = useState(false); // Modal visibility state
   const [isSeeReviewModalOpen, setIsSeeReviewModalOpen] = useState(false);
+  const modalRef = useRef(null);
+
+  // Function to close the modal when clicking outside
+  const handleClickOutside = (event) => {
+    console.log("clickeddddddddddddddd handleClickOutside");
+    if (modalRef.current && !modalRef.current.contains(event.target)) {
+      setIsGiveReviewModalOpen(false);
+      setIsSeeReviewModalOpen(false);
+    }
+  };
 
   const handleOpenGiveReviewModal = () => {
     setIsGiveReviewModalOpen(true);
@@ -33,6 +43,21 @@ const RestaurantPage = () => {
     setIsSeeReviewModalOpen(false);
   };
   console.log(res.address);
+
+  useEffect(() => {
+    if (isGiveReviewModalOpen || isSeeReviewModalOpen) {
+      // Add event listener when modal is opened
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      // Remove event listener when modal is closed
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isGiveReviewModalOpen, isSeeReviewModalOpen]);
 
   return (
     <div className="container mx-auto">
@@ -172,12 +197,18 @@ const RestaurantPage = () => {
       {isGiveReviewModalOpen && (
         <CenterModal
           children={
-            <RatingForm reviewType="restaurant" onClose={handleCloseModal} />
+            <RatingForm
+              ref={modalRef}
+              reviewType="restaurant"
+              onClose={handleCloseModal}
+            />
           }
         />
       )}
       {isSeeReviewModalOpen && (
-        <CenterModal children={<SeeReviews onClose={handleCloseModal} />} />
+        <CenterModal
+          children={<SeeReviews ref={modalRef} onClose={handleCloseModal} />}
+        />
       )}
     </div>
   );

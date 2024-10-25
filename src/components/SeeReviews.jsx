@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef } from "react";
 import Review from "./Review";
 import { assets } from "../assets/assets";
 import Button from "./SmallComponents/Button/Button";
 
 // Review card component
-const SeeReviews = ({ onClose }) => {
+const SeeReviews = forwardRef(({ onClose }, modalRef) => {
   const closeModal = () => {
     onClose();
   };
@@ -21,7 +21,10 @@ const SeeReviews = ({ onClose }) => {
     },
   ];
   return (
-    <div className="bg-white shadow-md border bottom-slate-100  p-4 h-96 overflow-auto ">
+    <div
+      className="bg-white shadow-md border bottom-slate-100  p-4 h-96 overflow-auto  "
+      ref={modalRef}
+    >
       <img
         className="cursor-pointer absolute right-10"
         src={assets.cross_icon}
@@ -35,6 +38,6 @@ const SeeReviews = ({ onClose }) => {
       </div>
     </div>
   );
-};
+});
 
 export default SeeReviews;

@@ -23,7 +23,7 @@ const Navbar = () => {
 
   const logoutHandle = () => {
     // Clear the logged-in users from sessionStorage
-    sessionStorage.removeItem("loginUsers");
+    sessionStorage.removeItem("loginUser");
 
     // Optionally, reset any application state or perform additional logout logic here
     // e.g., redirect to home or show a notification
@@ -35,7 +35,7 @@ const Navbar = () => {
     navigate("/");
   };
 
-  const loggedInUser = JSON.parse(sessionStorage.getItem("loginUsers"));
+  const loggedInUser = JSON.parse(sessionStorage.getItem("loginUser"));
   console.log("loggedInuser", loggedInUser);
   return (
     <div className="navbar">
@@ -96,7 +96,7 @@ const Navbar = () => {
               {isOpen && (
                 <div className="absolute  mt-2 w-48 bg-white rounded-md shadow-lg z-10 shadow-slate-300">
                   <Link
-                    to="/user-profile"
+                    to="/profile"
                     onClick={() => {
                       setIsOpen(false), setMenu("");
                     }}

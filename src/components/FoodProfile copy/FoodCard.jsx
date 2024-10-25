@@ -24,11 +24,12 @@ const ProductCard = () => {
     console.log("clickeddddddddddddddd handleClickOutside");
     if (modalRef.current && !modalRef.current.contains(event.target)) {
       setIsGiveReviewModalOpen(false);
+      setIsSeeReviewModalOpen(false);
     }
   };
 
   useEffect(() => {
-    if (isGiveReviewModalOpen) {
+    if (isGiveReviewModalOpen || isSeeReviewModalOpen) {
       // Add event listener when modal is opened
       document.addEventListener("mousedown", handleClickOutside);
     } else {
@@ -40,7 +41,7 @@ const ProductCard = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isGiveReviewModalOpen]);
+  }, [isGiveReviewModalOpen, isSeeReviewModalOpen]);
 
   const handleOpenGiveReviewModal = () => {
     setIsGiveReviewModalOpen(true);
@@ -202,7 +203,9 @@ const ProductCard = () => {
         />
       )}
       {isSeeReviewModalOpen && (
-        <CenterModal children={<SeeReviews onClose={handleCloseModal} />} />
+        <CenterModal
+          children={<SeeReviews ref={modalRef} onClose={handleCloseModal} />}
+        />
       )}
     </div>
   );
