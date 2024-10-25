@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import Button from "../SmallComponents/Button/Button";
 import ToggleButton from "../SmallComponents/ToggleButton";
+import UploadFile from "../SmallComponents/UploadFile";
+import NutritionFactsForm from "./AddNutritionFactForm";
 
 const AddFoodItemForm = ({ children }) => {
   const [address, setAddress] = useState({
@@ -10,9 +12,16 @@ const AddFoodItemForm = ({ children }) => {
     postalCode: "",
   });
   const [isToggleEnabled, setIsToggleEnabled] = useState(false);
+  const [isNutFactToggleEnabled, setIsNutFactToggleEnabled] = useState(false);
 
-  const handleToggleChange = () => {
+  const handleToggleStockChange = () => {
     setIsToggleEnabled((prevState) => {
+      const newState = !prevState;
+      return newState;
+    });
+  };
+  const handleToggleNutFactChange = () => {
+    setIsNutFactToggleEnabled((prevState) => {
       const newState = !prevState;
       return newState;
     });
@@ -78,15 +87,27 @@ const AddFoodItemForm = ({ children }) => {
               className="mt-1 p-2 w-full border rounded"
             />
           </div>
+
           <div>
             <ToggleButton
               isEnabled={isToggleEnabled}
-              handleToggleChange={handleToggleChange}
+              handleToggleChange={handleToggleStockChange}
               children="In Stock"
             />
           </div>
+          <div>
+            <ToggleButton
+              isEnabled={isNutFactToggleEnabled}
+              handleToggleChange={handleToggleNutFactChange}
+              children="Add Nutrition Fact"
+            />
+          </div>
+          <div>
+            <UploadFile children="Upload Photo" />
+            <Button type="submit" children="Add Item" />
+          </div>
+          {isNutFactToggleEnabled ? <NutritionFactsForm /> : <></>}
         </div>
-        <Button type="submit" children="Add Item" />
       </form>
     </div>
   );

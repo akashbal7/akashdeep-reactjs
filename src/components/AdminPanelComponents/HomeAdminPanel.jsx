@@ -142,13 +142,16 @@ const HomeAdminPanel = () => {
               placeholder="Search here..."
               className="border border-gray-300 rounded-md p-2 w-1/2"
             />
-            {showActiveSidebarTab !== "5" ? (
-              <Button
-                onClick={() => {
-                  setShowAddItemForm(true);
-                }}
-                children="Add Item"
-              />
+            {showActiveSidebarTab !== "5" && role === "restaurant_owner" ? (
+              (console.log("insideeee"),
+              (
+                <Button
+                  onClick={() => {
+                    setShowAddItemForm(true);
+                  }}
+                  children="Add Item"
+                />
+              ))
             ) : (
               <></>
             )}
@@ -159,7 +162,7 @@ const HomeAdminPanel = () => {
           role === "restaurant_owner" ? (
             <div className="">
               {showActiveSidebarTab === "1" ? (
-                <Dashboard />
+                <Dashboard role={role} />
               ) : showActiveSidebarTab === "2" ? (
                 <RestaurantOwnerProfile loggedInUser={loggedInUser} />
               ) : showActiveSidebarTab === "3" ? (
