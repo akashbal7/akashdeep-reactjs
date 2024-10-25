@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { assets } from "../../assets/assets";
 import Button from "../SmallComponents/Button/Button";
+import ToggleButton from "../SmallComponents/ToggleButton";
 
 const Register = ({ setShowLogin, setShowRegister }) => {
   const [role, setRole] = useState("customer");
@@ -13,6 +14,16 @@ const Register = ({ setShowLogin, setShowRegister }) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [restaurantName, setRestaurantName] = useState("");
+  const [isToggleEnabled, setIsToggleEnabled] = useState(false);
+
+  const handleToggleChange = () => {
+    setIsToggleEnabled((prevState) => {
+      const newState = !prevState;
+      alert(`Toggle is now ${newState ? "enabled" : "disabled"}`);
+      return newState;
+    });
+  };
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -30,7 +41,7 @@ const Register = ({ setShowLogin, setShowRegister }) => {
       lastName,
       email,
       phoneNumber,
-      role,
+      role: isToggleEnabled ? "restaurant_owner" : "customer",
       password,
       profileUrl: `https://example.com/profiles/${firstName}_${lastName}`,
     };
@@ -55,7 +66,7 @@ const Register = ({ setShowLogin, setShowRegister }) => {
   return (
     <div>
       <form
-        className="w-96 bg-white text-gray-500 flex flex-col gap-6 p-6 rounded-2xl"
+        className="w-96 bg-white text-gray-500 flex flex-col gap-2 p-6 rounded-2xl"
         onSubmit={handleFormSubmit}
       >
         <div className="flex justify-between items-center text-gray-800">
@@ -70,7 +81,24 @@ const Register = ({ setShowLogin, setShowRegister }) => {
           />
         </div>
 
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-4">
+          <ToggleButton
+            isEnabled={isToggleEnabled}
+            handleToggleChange={handleToggleChange}
+            children="Restaurant Owner?"
+          />
+          {isToggleEnabled ? (
+            <input
+              type="text"
+              placeholder="Restaurant Name"
+              defaultValue={restaurantName}
+              required
+              onBlur={(e) => setPhoneNumber(e.target.value)}
+              className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+            />
+          ) : (
+            <></>
+          )}
           <input
             type="text"
             placeholder="First Name"
@@ -113,34 +141,11 @@ const Register = ({ setShowLogin, setShowRegister }) => {
           />
           <input
             type="tel"
-            placeholder="Phone Number (optional)"
+            placeholder="Phone Number"
             defaultValue={phoneNumber}
             onBlur={(e) => setPhoneNumber(e.target.value)}
             className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring focus:border-blue-300"
           />
-
-          <div className="flex gap-4">
-            <label className="flex items-center space-x-2">
-              <input
-                type="radio"
-                value="customer"
-                checked={role === "customer"}
-                onChange={() => setRole("customer")}
-                className="focus:ring-blue-300"
-              />
-              <span>Customer</span>
-            </label>
-            <label className="flex items-center space-x-2">
-              <input
-                type="radio"
-                value="restaurant_owner"
-                checked={role === "restaurant_owner"}
-                onChange={() => setRole("restaurant_owner")}
-                className="focus:ring-blue-300"
-              />
-              <span>Restaurant Owner</span>
-            </label>
-          </div>
         </div>
 
         <Button type="submit" children="Create Account" />
