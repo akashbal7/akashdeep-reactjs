@@ -61,6 +61,13 @@ const Navbar = () => {
           Restaurants
         </Link>
         <Link
+          to="/menu"
+          onClick={() => setMenu("menu")}
+          className={menu === "menu" ? "active" : ""}
+        >
+          Menu
+        </Link>
+        <Link
           to="/contact-us"
           onClick={() => setMenu("contact-us")}
           className={menu === "contact-us" ? "active" : ""}

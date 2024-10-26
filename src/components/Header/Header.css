@@ -33,17 +33,6 @@ header {
   text-shadow: 2px 2px 2px #00000030;
 }
 
-.header-contents button {
-  border: none;
-  border-radius: 50px;
-  color: var(--gray);
-  font-weight: 500;
-  font-size: max(1vw, 13px);
-  padding: 1vw 2.3vw;
-  background-color: #fff;
-  cursor: pointer;
-}
-
 @media (max-width: 1050px) {
   header {
     height: 40vw;

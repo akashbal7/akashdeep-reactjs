@@ -15,6 +15,7 @@ import UserProfile from "./components/AdminPanelComponents/CustomerProfile";
 import RatingForm from "./components/RatingForm";
 import CenterModal from "./components/SmallComponents/CenterModal";
 import HomeAdminPanel from "./components/AdminPanelComponents/HomeAdminPanel";
+import FoodMenu from "./pages/FoodMenu";
 
 const App = () => {
   const [isContactUsOpen, setOpenContactUs] = useState(false);
@@ -31,6 +32,7 @@ const App = () => {
           <Route path="/food/:id" element={<FoodCard />} />
           <Route path="/restaurant/:id" element={<RestaurantPage />} />
           <Route path="/profile" element={<HomeAdminPanel />} />
+          <Route path="/menu" element={<FoodMenu />} />
         </Routes>
       </div>
       <Footer />
