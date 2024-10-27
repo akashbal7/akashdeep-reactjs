@@ -5,6 +5,7 @@ import { StoreContext } from "../../context/StoreContext";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../SmallComponents/Button/Button";
 import Rating from "../SmallComponents/Rating";
+import FoodItemCounter from "../FoodItemCounter";
 
 const FoodItem = ({ id, name, price, description, image }) => {
   const { cartItems, addToCart, removeFromCart } = useContext(StoreContext);
@@ -13,35 +14,13 @@ const FoodItem = ({ id, name, price, description, image }) => {
     <div className="food-item shadow-slate-300 shadow-lg">
       <div className="food-item-img-container">
         <img src={image} alt="image" className="food-item-img" />
-        {!cartItems[id] ? (
-          <img
-            src={assets.add_icon_white}
-            alt="add_icon_white"
-            className="add"
-            onClick={(e) => {
-              e.stopPropagation;
-              addToCart(id);
-            }}
-          />
-        ) : (
-          <div className="food-item-counter">
-            <img
-              src={assets.remove_icon_red}
-              alt="remove_icon_red"
-              onClick={(e) => {
-                e.stopPropagation, removeFromCart(id);
-              }}
-            />
-            <p>{cartItems[id]}</p>
-            <img
-              src={assets.add_icon_green}
-              alt="add_icon_green"
-              onClick={(e) => {
-                e.stopPropagation, addToCart(id);
-              }}
-            />
-          </div>
-        )}
+        <FoodItemCounter
+          id={id}
+          cartItems={cartItems}
+          addToCart={addToCart}
+          removeFromCart={removeFromCart}
+          assets={assets}
+        />
       </div>
       <div className="food-item-info">
         <div className="food-item-name-rating">

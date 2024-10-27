@@ -9,6 +9,7 @@ import ImageComponent from "../SmallComponents/ImageComponent/ImageComponent";
 import SeeReviews from "../SeeReviews";
 import CenterModal from "../SmallComponents/CenterModal";
 import RatingForm from "../RatingForm";
+import FoodItemCounter from "../FoodItemCounter";
 
 const ProductCard = () => {
   const { id } = useParams();
@@ -65,7 +66,7 @@ const ProductCard = () => {
         </div>
 
         <div className="flex-1 md:flex-[0.4] md:w-1/2 ml-4 flex flex-col justify-between">
-          <div className="border-b mb-2 pb-2">
+          <div className="border-b mb-2 pb-2 relative">
             <div className="flex justify-between">
               <div>
                 <h1 className="text-3xl font-bold">{product.name}</h1>
@@ -82,12 +83,17 @@ const ProductCard = () => {
             </div>
 
             {/* Add to Cart Button */}
-            <Button
-              children="Add to Cart"
-              onClick={(e) => {
-                addToCart(id);
-              }}
-            />
+
+            <div className="">
+              <FoodItemCounter
+                id={product._id}
+                cartItems={cartItems}
+                addToCart={addToCart}
+                removeFromCart={removeFromCart}
+                assets={assets}
+              />
+              <Button children="See Restaurant" />
+            </div>
           </div>
 
           <div className="">

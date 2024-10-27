@@ -1,9 +1,13 @@
 import React, { useState, useContext } from "react";
 import { StoreContext } from "../context/StoreContext";
 import { menu_list } from "../assets/assets";
+import { assets } from "../assets/assets";
+import FoodItemCounter from "../components/FoodItemCounter";
+import { Link } from "react-router-dom";
 
 const FoodMenu = () => {
   const { food_list } = useContext(StoreContext);
+  const { cartItems, addToCart, removeFromCart } = useContext(StoreContext);
   const [showActiveSidebarTab, setShowActiveSidebarTab] = useState("Salad");
   console.log("menu list", menu_list);
   const defaultClassWithTextBlack =
@@ -50,20 +54,28 @@ const FoodMenu = () => {
             .map((item, index) => (
               <div
                 key={index}
-                className="flex items-center p-4 border border-gray-200 rounded-lg shadow-sm"
+                className="flex items-center p-4 border border-gray-200 rounded-lg shadow-sm relative"
               >
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-20 h-20 object-cover rounded-lg mr-4"
-                />
+                <Link className="mr-4" to={`/food/${item._id}`} key={item._id}>
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="object-cover rounded-lg mr-4 cursor-pointer"
+                  />
+                </Link>
                 <div>
                   <h2 className="text-lg font-semibold">{item.name}</h2>
                   {item.description && (
                     <p className="text-sm text-gray-500">{item.description}</p>
                   )}
                   <p className="text-gray-900 font-medium">${item.price}</p>
-                  <p className="text-sm text-gray-400">{item.category}</p>
+                  <FoodItemCounter
+                    id={item._id}
+                    cartItems={cartItems}
+                    addToCart={addToCart}
+                    removeFromCart={removeFromCart}
+                    assets={assets}
+                  />
                 </div>
               </div>
             ))}
