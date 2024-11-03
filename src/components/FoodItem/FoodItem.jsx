@@ -6,23 +6,24 @@ import { Link, useNavigate } from "react-router-dom";
 import Button from "../SmallComponents/Button/Button";
 import Rating from "../SmallComponents/Rating";
 import FoodItemCounter from "../FoodItemCounter";
+import QuantitySelector from "../SmallComponents/QuantitySelector";
 
 const FoodItem = ({ id, name, price, description, image }) => {
   const { cartItems, addToCart, removeFromCart } = useContext(StoreContext);
 
   return (
-    <div className="food-item shadow-slate-300 shadow-lg">
-      <div className="food-item-img-container">
-        <img src={image} alt="image" className="food-item-img" />
-        <FoodItemCounter
-          id={id}
-          cartItems={cartItems}
-          addToCart={addToCart}
-          removeFromCart={removeFromCart}
-          assets={assets}
+    <div className="food-item shadow-slate-300 shadow-lg relative">
+      <div className="food-item-img-container relative">
+        <img
+          src={image}
+          alt="image"
+          className="food-item-img transition duration-300 ease-in-out hover:blur-sm"
         />
+        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100">
+          <QuantitySelector />
+        </div>
       </div>
-      <div className="food-item-info">
+      <div className="food-item-info p-4">
         <div className="food-item-name-rating">
           <p>{name}</p>
           <Rating rating={4} />

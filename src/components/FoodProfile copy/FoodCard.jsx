@@ -10,6 +10,7 @@ import SeeReviews from "../SeeReviews";
 import CenterModal from "../SmallComponents/CenterModal";
 import RatingForm from "../RatingForm";
 import FoodItemCounter from "../FoodItemCounter";
+import QuantitySelector from "../SmallComponents/QuantitySelector";
 
 const ProductCard = () => {
   const { id } = useParams();
@@ -67,7 +68,7 @@ const ProductCard = () => {
 
         <div className="flex-1 md:flex-[0.4] md:w-1/2 ml-4 flex flex-col justify-between">
           <div className="border-b mb-2 pb-2 relative">
-            <div className="flex justify-between">
+            <div className="flex justify-between mb-2">
               <div>
                 <h1 className="text-3xl font-bold">{product.name}</h1>
                 <div className="text-sm flex text-gray-500">
@@ -81,19 +82,8 @@ const ProductCard = () => {
                 <p className="text-green-600 font-medium">In Stock</p>
               </div>
             </div>
-
+            <QuantitySelector />
             {/* Add to Cart Button */}
-
-            <div className="">
-              <FoodItemCounter
-                id={product._id}
-                cartItems={cartItems}
-                addToCart={addToCart}
-                removeFromCart={removeFromCart}
-                assets={assets}
-              />
-              <Button children="See Restaurant" />
-            </div>
           </div>
 
           <div className="">
