@@ -8,46 +8,55 @@ const Login = ({ setShowLogin, setShowRegister }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    console.log("ffffffffffffffffffffffffffffffffffffff");
 
-    const existingUsers = JSON.parse(sessionStorage.getItem("users")) || [];
-    console.log(existingUsers);
-    const user = existingUsers.find((user) => user.email === email);
-    console.log(user);
-    if (!user) {
-      setError("Email not registered.");
-      return; // Exit if user not found
-    }
-
-    if (user.password !== password) {
-      setError("Incorrect password. Please try again.");
-      return; // Exit if password doesn't match
-    }
-
-    // Create a new user object
-    const createLogin = {
-      id: Date.now(), // Using a timestamp as a unique ID
+    // Prepare payload
+    const payload = {
       email: email,
       password: password,
-      isLogedIn: true,
-      role: user.role,
     };
 
-    // Add new user to the array
+    try {
+      const response = await fetch("http://localhost:5000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-    // Save updated users array back to local storage
-    sessionStorage.setItem("loginUser", JSON.stringify(createLogin));
-    setEmail("");
-    setPassword("");
-    setError(""); //
-    // Optionally, clear form fields or show success message
-    alert("Login successfully!");
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.error); // Set the error message from the response
+        return; // Exit if the response is not OK
+      }
 
-    // Hide register form and possibly show login form
-    setShowRegister(false);
-    setShowLogin(false);
+      const data = await response.json();
+      // Here you can save the user data or role to session storage or state
+      console.log(data);
+      const createLogin = {
+        id: data.id, // Using a timestamp as a unique ID
+        email: email,
+        isLogedIn: true,
+        role: data.role,
+      };
+
+      // Save logged-in user to session storage
+      sessionStorage.setItem("loginUser", JSON.stringify(createLogin));
+
+      // Clear form fields and error message
+      setEmail("");
+      setPassword("");
+      setError("");
+
+      // Hide register form and login form
+      setShowRegister(false);
+      setShowLogin(false);
+    } catch (error) {
+      setError("An error occurred. Please try again.");
+      console.error("Login error:", error);
+    }
   };
 
   return (

@@ -16,15 +16,13 @@ const Register = ({ setShowLogin, setShowRegister }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [restaurantName, setRestaurantName] = useState("");
   const [isToggleEnabled, setIsToggleEnabled] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null); // To handle API errors
 
   const handleToggleChange = () => {
-    setIsToggleEnabled((prevState) => {
-      const newState = !prevState;
-      return newState;
-    });
+    setIsToggleEnabled((prevState) => !prevState);
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
 
     // Ensure password and confirm password match
@@ -33,37 +31,51 @@ const Register = ({ setShowLogin, setShowRegister }) => {
       return;
     }
 
+    // Hash the password (assuming you have a hashPassword function)
+    // const hashedPassword = await hashPassword(password);
+
     // Create a new user object
     const newUser = {
-      id: Date.now(), // Using a timestamp as a unique ID
-      firstName,
-      lastName,
       email,
-      phoneNumber,
-      role: isToggleEnabled ? "restaurant_owner" : "customer",
-      password,
-      profileUrl: `https://example.com/profiles/${firstName}_${lastName}`,
+      password, // Use the hashed password
+      first_name: firstName, // Use snake_case for API compatibility
+      last_name: lastName,
+      role: isToggleEnabled ? "owner" : "customer",
+      restaurant_name: restaurantName,
     };
 
-    // Retrieve existing users from local storage
-    const existingUsers = JSON.parse(sessionStorage.getItem("users")) || [];
+    try {
+      const response = await fetch("http://localhost:5000/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newUser),
+      });
 
-    // Add new user to the array
-    existingUsers.push(newUser);
+      if (!response.ok) {
+        // Handle error response
+        const errorData = await response.json();
+        setErrorMessage(errorData.message || "Registration failed.");
+        return;
+      }
 
-    // Save updated users array back to local storage
-    sessionStorage.setItem("users", JSON.stringify(existingUsers));
+      const result = await response.json();
 
-    // Optionally, clear form fields or show success message
-    alert("Account created successfully!");
-
-    // Hide register form and possibly show login form
-    setShowRegister(false);
-    setShowLogin(true);
+      // Hide register form and show login form
+      setShowRegister(false);
+      setShowLogin(true);
+    } catch (error) {
+      console.error("Error during registration:", error);
+      setErrorMessage(
+        "An error occurred during registration. Please try again."
+      );
+    }
   };
 
   return (
     <div>
+      {errorMessage && <div className="text-red-600">{errorMessage}</div>}
       <form
         className="w-96 bg-white text-gray-500 flex flex-col gap-2 p-6 rounded-2xl"
         onSubmit={handleFormSubmit}
@@ -75,7 +87,8 @@ const Register = ({ setShowLogin, setShowRegister }) => {
             alt="cross_icon"
             className="w-4 cursor-pointer"
             onClick={() => {
-              setShowRegister(false), setShowLogin(false);
+              setShowRegister(false);
+              setShowLogin(false);
             }}
           />
         </div>
@@ -86,63 +99,61 @@ const Register = ({ setShowLogin, setShowRegister }) => {
             handleToggleChange={handleToggleChange}
             children="Restaurant Owner?"
           />
-          {isToggleEnabled ? (
+          {isToggleEnabled && (
             <input
               type="text"
               placeholder="Restaurant Name"
-              defaultValue={restaurantName}
+              value={restaurantName}
               required
-              onBlur={(e) => setPhoneNumber(e.target.value)}
+              onChange={(e) => setRestaurantName(e.target.value)}
               className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring focus:border-blue-300"
             />
-          ) : (
-            <></>
           )}
           <input
             type="text"
             placeholder="First Name"
             required
-            defaultValue={firstName}
-            onBlur={(e) => setFirstName(e.target.value)}
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
             className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring focus:border-blue-300"
           />
           <input
             type="text"
             placeholder="Last Name"
             required
-            defaultValue={lastName}
-            onBlur={(e) => setLastName(e.target.value)}
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
             className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring focus:border-blue-300"
           />
           <input
             type="email"
             placeholder="Your email"
             required
-            defaultValue={email}
-            onBlur={(e) => setEmail(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring focus:border-blue-300"
           />
           <input
             type="password"
             placeholder="Password"
             required
-            defaultValue={password}
-            onBlur={(e) => setPassword(e.target.value)}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring focus:border-blue-300"
           />
           <input
             type="password"
             placeholder="Confirm Password"
             required
-            defaultValue={confirmPassword}
-            onBlur={(e) => setConfirmPassword(e.target.value)}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring focus:border-blue-300"
           />
           <input
             type="tel"
             placeholder="Phone Number"
-            defaultValue={phoneNumber}
-            onBlur={(e) => setPhoneNumber(e.target.value)}
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
             className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring focus:border-blue-300"
           />
         </div>
