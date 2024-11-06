@@ -18,10 +18,16 @@ const Navbar = () => {
   const [showLogin, setShowLogin] = useState(false);
   const navigate = useNavigate();
   const { loggedInUser, logoutUser } = useAuth();
+  let first_name = "";
+  let last_name = "";
   // Toggle the dropdown visibility
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
+  if (loggedInUser) {
+    last_name = loggedInUser.last_name;
+    first_name = loggedInUser.first_name;
+  }
 
   const logoutHandle = () => {
     // Clear the logged-in users from sessionStorage
@@ -90,10 +96,13 @@ const Navbar = () => {
         ) : (
           <div>
             <div className="relative inline-block text-left">
-              <FaUser
-                className="text-3xl text-gray-500 mt-1 pt-1 text-emerald-600 cursor-pointer text-slate-800"
+              <div
                 onClick={toggleDropdown}
-              />
+                className="bg-orange-500 cursor-pointer rounded-full h-10 w-10 flex items-center justify-center text-white font-bold"
+              >
+                {first_name.charAt(0)}
+                {last_name.charAt(0)}
+              </div>
 
               {/* Dropdown Menu */}
               {isOpen && (

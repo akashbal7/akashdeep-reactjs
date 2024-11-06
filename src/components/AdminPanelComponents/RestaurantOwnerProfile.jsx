@@ -3,8 +3,12 @@ import Button from "../SmallComponents/Button/Button";
 import { useNavigate } from "react-router-dom";
 import Address from "./Address";
 import { useAuth } from "../AuthProvider";
+import ToastNotification from "../ToastNotification";
 
 const RestaurantOwnerProfile = ({ loggedInUser }) => {
+  const [isMessagePopUpModalOpen, setIsMessagePopUpModalOpen] = useState(false);
+  const [apiMessage, setApiMessage] = useState("");
+  const [isApiSuccess, setIsApiSuccess] = useState(true);
   const [user, setUser] = useState({
     first_name: "",
     last_name: "",
@@ -46,7 +50,7 @@ const RestaurantOwnerProfile = ({ loggedInUser }) => {
       })
       .catch((err) => {
         console.error(err.message);
-        setError("Failed to fetch user data"); // Set error state
+        setError("Failed to fetch user data");
       });
   };
 
@@ -107,11 +111,18 @@ const RestaurantOwnerProfile = ({ loggedInUser }) => {
         return response.json();
       })
       .then((data) => {
-        fetchUserData(); // Call the fetch function again to get the updated data
+        fetchUserData();
+        setIsMessagePopUpModalOpen(true);
+        setApiMessage(data.message);
+
+        // Hide the modal after 3 seconds
+        setTimeout(() => setIsMessagePopUpModalOpen(false), 3000); // Call the fetch function again to get the updated data
       })
       .catch((error) => {
         console.error("Error updating user:", error);
-        setError("Failed to update user");
+        setApiMessage(data.message);
+        setIsApiSuccess(false);
+        setTimeout(() => setIsMessagePopUpModalOpen(false), 3000);
       });
   };
   return (
@@ -229,6 +240,9 @@ const RestaurantOwnerProfile = ({ loggedInUser }) => {
           addressId={user.restaurant.address.id}
         />
       </div>
+      {isMessagePopUpModalOpen && (
+        <ToastNotification isSuccess={isApiSuccess} message={apiMessage} />
+      )}
     </div>
   );
 };

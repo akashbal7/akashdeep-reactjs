@@ -10,9 +10,7 @@ import FoodCard from "./components/FoodProfile copy/FoodCard";
 import RestaurantPage from "./components/Restaurant copy/Restaurant";
 import ContactUs from "./components/ContactUs";
 import HomeAdminPanel from "./components/AdminPanelComponents/HomeAdminPanel";
-import FoodItemTable from "./components/AdminPanelComponents/FoodItemTable";
-import Dashboard from "./components/AdminPanelComponents/Dashboard";
-import ReviewTable from "./components/AdminPanelComponents/ReviewTable";
+import FoodMenu from "./pages/FoodMenu";
 
 const App = () => {
   return (
@@ -28,6 +26,7 @@ const App = () => {
           <Route path="/food/:id" element={<FoodCard />} />
           <Route path="/restaurant/:id" element={<RestaurantPage />} />
           <Route path="/profile" element={<HomeAdminPanel />} />
+          <Route path="/menu" element={<FoodMenu />} />
         </Routes>
       </div>
       <Footer />
