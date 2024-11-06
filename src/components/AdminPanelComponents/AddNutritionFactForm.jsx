@@ -1,35 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const NutritionFactsForm = () => {
-  const [formValues, setFormValues] = useState({
-    servingSize: "",
+const NutritionFactsForm = ({ onChange }) => {
+  const [localValues, setLocalValues] = useState({
+    serving_size: "",
     calories: "",
-    caloriesFromFat: "",
-    totalFat: "",
-    saturatedFat: "",
-    transFat: "",
+    calories_from_fat: "",
+    total_fat: "",
+    saturated_fat: "",
+    trans_fat: "",
     cholesterol: "",
     sodium: "",
-    totalCarbohydrate: "",
-    dietaryFiber: "",
+    total_carbohydrate: "",
+    dietary_fiber: "",
     sugars: "",
     protein: "",
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: value });
+    setLocalValues((prevValues) => ({ ...prevValues, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(formValues);
-  };
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      onChange(localValues); // Only update after 300ms debounce
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn); // Cleanup on unmount or `localValues` changes
+  }, [localValues, onChange]);
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6 mt-4">
       <h1 className="text-gray-700 text-2xl mb-4">Nutrition Facts</h1>
-      <form className="space-y-4" onSubmit={handleSubmit}>
+      <div className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -37,8 +40,8 @@ const NutritionFactsForm = () => {
             </label>
             <input
               type="text"
-              name="servingSize"
-              value={formValues.servingSize}
+              name="serving_size"
+              value={localValues.serving_size}
               onChange={handleInputChange}
               placeholder="Serving Size"
               className="mt-1 p-2 w-full border rounded"
@@ -51,7 +54,7 @@ const NutritionFactsForm = () => {
             <input
               type="number"
               name="calories"
-              value={formValues.calories}
+              value={localValues.calories}
               onChange={handleInputChange}
               placeholder="Calories"
               className="mt-1 p-2 w-full border rounded"
@@ -63,8 +66,8 @@ const NutritionFactsForm = () => {
             </label>
             <input
               type="number"
-              name="caloriesFromFat"
-              value={formValues.caloriesFromFat}
+              name="calories_from_fat"
+              value={localValues.calories_from_fat}
               onChange={handleInputChange}
               placeholder="Calories From Fat"
               className="mt-1 p-2 w-full border rounded"
@@ -76,8 +79,8 @@ const NutritionFactsForm = () => {
             </label>
             <input
               type="number"
-              name="totalFat"
-              value={formValues.totalFat}
+              name="total_fat"
+              value={localValues.total_fat}
               onChange={handleInputChange}
               placeholder="Total Fat (g)"
               className="mt-1 p-2 w-full border rounded"
@@ -89,8 +92,8 @@ const NutritionFactsForm = () => {
             </label>
             <input
               type="number"
-              name="saturatedFat"
-              value={formValues.saturatedFat}
+              name="saturated_fat"
+              value={localValues.saturated_fat}
               onChange={handleInputChange}
               placeholder="Saturated Fat (g)"
               className="mt-1 p-2 w-full border rounded"
@@ -102,8 +105,8 @@ const NutritionFactsForm = () => {
             </label>
             <input
               type="number"
-              name="transFat"
-              value={formValues.transFat}
+              name="trans_fat"
+              value={localValues.trans_fat}
               onChange={handleInputChange}
               placeholder="Trans Fat (g)"
               className="mt-1 p-2 w-full border rounded"
@@ -116,7 +119,7 @@ const NutritionFactsForm = () => {
             <input
               type="number"
               name="cholesterol"
-              value={formValues.cholesterol}
+              value={localValues.cholesterol}
               onChange={handleInputChange}
               placeholder="Cholesterol (mg)"
               className="mt-1 p-2 w-full border rounded"
@@ -129,7 +132,7 @@ const NutritionFactsForm = () => {
             <input
               type="number"
               name="sodium"
-              value={formValues.sodium}
+              value={localValues.sodium}
               onChange={handleInputChange}
               placeholder="Sodium (mg)"
               className="mt-1 p-2 w-full border rounded"
@@ -141,8 +144,8 @@ const NutritionFactsForm = () => {
             </label>
             <input
               type="number"
-              name="totalCarbohydrate"
-              value={formValues.totalCarbohydrate}
+              name="total_carbohydrate"
+              value={localValues.total_carbohydrate}
               onChange={handleInputChange}
               placeholder="Total Carbohydrate (g)"
               className="mt-1 p-2 w-full border rounded"
@@ -154,8 +157,8 @@ const NutritionFactsForm = () => {
             </label>
             <input
               type="number"
-              name="dietaryFiber"
-              value={formValues.dietaryFiber}
+              name="dietary_fiber"
+              value={localValues.dietary_fiber}
               onChange={handleInputChange}
               placeholder="Dietary Fiber (g)"
               className="mt-1 p-2 w-full border rounded"
@@ -168,7 +171,7 @@ const NutritionFactsForm = () => {
             <input
               type="number"
               name="sugars"
-              value={formValues.sugars}
+              value={localValues.sugars}
               onChange={handleInputChange}
               placeholder="Sugars (g)"
               className="mt-1 p-2 w-full border rounded"
@@ -181,14 +184,14 @@ const NutritionFactsForm = () => {
             <input
               type="number"
               name="protein"
-              value={formValues.protein}
+              value={localValues.protein}
               onChange={handleInputChange}
               placeholder="Protein (g)"
               className="mt-1 p-2 w-full border rounded"
             />
           </div>
         </div>
-      </form>
+      </div>
     </div>
   );
 };

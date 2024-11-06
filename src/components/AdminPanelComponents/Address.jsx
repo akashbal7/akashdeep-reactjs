@@ -1,28 +1,89 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "../SmallComponents/Button/Button";
 
-const Address = () => {
+const Address = ({ addressObj, restaurantId, addressId }) => {
+  if (!addressObj) {
+    return <div>No address available.</div>; // Render a message when address is missing
+  }
+
   const [address, setAddress] = useState({
-    line1: "",
-    city: "",
-    state: "",
-    postalCode: "",
+    address_line_1: addressObj?.address_line_1 || "",
+    address_line_2: addressObj?.address_line_2 || "",
+    city: addressObj?.city || "",
+    country: addressObj?.country || "",
+    postal_code: addressObj?.postal_code || "",
+    state: addressObj?.state || "",
+    id: addressObj?.id || null,
   });
+  console.log("addressObj");
 
   const handleChange = (e) => {
-    setAddress({ ...address, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setAddress((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
-  const handleAddAddress = (e) => {
+  useEffect(() => {
+    setAddress({
+      address_line_1: addressObj?.address_line_1 || "",
+      address_line_2: addressObj?.address_line_2 || "",
+      city: addressObj?.city || "",
+      country: addressObj?.country || "",
+      postal_code: addressObj?.postal_code || "",
+      state: addressObj?.state || "",
+      id: addressObj?.id || null,
+    });
+  }, [addressObj]);
+
+  const handleSaveAddress = (e) => {
     e.preventDefault();
-    // Handle the add address action here (e.g., save to database or display)
-    console.log("Address added:", address);
+
+    // Prepare the updated address data to send in the PUT request
+    const updatedAddress = {
+      address_line_1: address.address_line_1,
+      address_line_2: address.address_line_2,
+      city: address.city,
+      country: address.country,
+      postal_code: address.postal_code,
+      state: address.state,
+    };
+
+    if (!restaurantId || !addressId) {
+      console.error("Invalid restaurantId or addressId");
+      return;
+    }
+
+    // Send the PUT request to update the address
+    fetch(
+      `http://localhost:5000/restaurant/${restaurantId}/address/${addressId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedAddress),
+      }
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to update address");
+        }
+        return response.json();
+      })
+      // .then((data) => {
+      //   console.log("Address updated successfully:", data);
+      // })
+      .catch((error) => {
+        console.error("Error updating address:", error);
+      });
   };
 
   return (
     <div className="bg-white rounded-lg mt-4">
       <h1 className="text-gray-700 text-2xl mb-4">Address</h1>
-      <form className="space-y-4" onSubmit={handleAddAddress}>
+      <form className="space-y-4" onSubmit={handleSaveAddress}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -30,8 +91,8 @@ const Address = () => {
             </label>
             <input
               type="text"
-              name="line1"
-              value={address.line1}
+              name="address_line_1"
+              value={address ? address?.address_line_1 : ""}
               onChange={handleChange}
               className="mt-1 p-2 w-full border rounded"
             />
@@ -42,8 +103,8 @@ const Address = () => {
             </label>
             <input
               type="text"
-              name="line2"
-              value={address.line1}
+              name="address_line_2"
+              value={address ? address?.address_line_2 : ""}
               onChange={handleChange}
               className="mt-1 p-2 w-full border rounded"
             />
@@ -56,7 +117,7 @@ const Address = () => {
             <input
               type="text"
               name="city"
-              value={address.city}
+              value={address ? address?.city : ""}
               onChange={handleChange}
               className="mt-1 p-2 w-full border rounded"
             />
@@ -68,7 +129,7 @@ const Address = () => {
             <input
               type="text"
               name="state"
-              value={address.state}
+              value={address ? address?.state : ""}
               onChange={handleChange}
               className="mt-1 p-2 w-full border rounded"
             />
@@ -79,8 +140,8 @@ const Address = () => {
             </label>
             <input
               type="text"
-              name="postalCode"
-              value={address.postalCode}
+              name="postal_code"
+              value={address ? address?.postal_code : ""}
               onChange={handleChange}
               className="mt-1 p-2 w-full border rounded"
             />
@@ -92,7 +153,7 @@ const Address = () => {
             <input
               type="text"
               name="country"
-              value={address.postalCode}
+              value={address ? address?.country : ""}
               onChange={handleChange}
               className="mt-1 p-2 w-full border rounded"
             />

@@ -1,33 +1,30 @@
 import React, { useState, useEffect } from "react";
 import Button from "../SmallComponents/Button/Button";
-import { useNavigate } from "react-router-dom";
 
 const CustomerProfile = ({ loggedInUser }) => {
-  const [user, setUser] = useState({
-    username: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-    phoneNumber: "",
-    // Initialize any other fields you have
-  });
-  const navigate = useNavigate();
+  const [user, setUser] = useState({});
+  const [error, setError] = useState("");
+
+  const fetchUserData = () => {
+    fetch(`http://localhost:5000/user/${loggedInUser.id}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch user data");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setUser(data); // Update the state with fetched user data
+      })
+      .catch((err) => {
+        console.error(err.message);
+        setError("Failed to fetch user data"); // Set error state
+      });
+  };
 
   useEffect(() => {
-    // Fetch users from local storage
-    const usersDetail = JSON.parse(sessionStorage.getItem("users")) || [];
-    console.log(loggedInUser.email);
-    const foundUser = usersDetail.find((u) => u.email === loggedInUser?.email);
-    setUser(foundUser);
-    console.log("user", foundUser);
-
-    if (foundUser) {
-      setUser(foundUser);
-    } else {
-      alert("Please log in");
-      navigate("/");
-    }
-  }, [navigate]); // Empty dependency array ensures this runs only once
+    fetchUserData(); // Fetch user data on component mount
+  }, [loggedInUser.id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,34 +34,35 @@ const CustomerProfile = ({ loggedInUser }) => {
     }));
   };
 
-  const handleSaveChanges = () => {
-    const usersDetail = JSON.parse(sessionStorage.getItem("users")) || [];
-
-    // Debugging: Log the current usersDetail array
-    console.log("Current users in session:", usersDetail);
-
-    // Remove the old user object that matches the email
-    const updatedUsersDetail = usersDetail.filter(
-      (u) => u.email !== user.email
-    );
-
-    // Debugging: Log the updated usersDetail array after filtering
-    console.log("Updated users after removal:", updatedUsersDetail);
-
-    // Add the updated user object to the array
-    updatedUsersDetail.push(user);
-
-    // Store the updated user list back in session storage
-    sessionStorage.setItem("users", JSON.stringify(updatedUsersDetail));
-
-    // Debugging: Log the new state of usersDetail in session storage
-    console.log(
-      "New users in session after update:",
-      JSON.parse(sessionStorage.getItem("users"))
-    );
-
-    alert("Profile updated successfully!");
+  const handleSaveChanges = (e) => {
+    e.preventDefault();
+    fetch(`http://localhost:5000/user/${loggedInUser.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        first_name: user.first_name,
+        last_name: user.last_name,
+        phone_number: user.phone_number,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to update user");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("User updated successfully:", data);
+        fetchUserData(); // Call the fetch function again to get the updated data
+      })
+      .catch((error) => {
+        console.error("Error updating user:", error);
+        setError("Failed to update user");
+      });
   };
+
   return (
     <div className=" bg-white md:flex-[0.7] shadow rounded-lg p-6">
       <h2 className="text-gray-700 text-2xl mb-4">Account Details</h2>
@@ -76,8 +74,8 @@ const CustomerProfile = ({ loggedInUser }) => {
             </label>
             <input
               type="text"
-              name="firstName"
-              value={user ? user.firstName : ""}
+              name="first_name"
+              value={user ? user.first_name : ""}
               placeholder="First name"
               onChange={handleChange}
               className="mt-1 p-2 w-full border rounded"
@@ -89,14 +87,14 @@ const CustomerProfile = ({ loggedInUser }) => {
             </label>
             <input
               type="text"
-              name="lastName"
+              name="last_name"
               placeholder="Last name"
               onChange={handleChange}
-              value={user ? user.lastName : ""}
+              value={user ? user.last_name : ""}
               className="mt-1 p-2 w-full border rounded"
             />
           </div>
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700">
               Location
             </label>
@@ -108,7 +106,7 @@ const CustomerProfile = ({ loggedInUser }) => {
               onChange={handleChange}
               className="mt-1 p-2 w-full border rounded"
             />
-          </div>
+          </div> */}
 
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -129,8 +127,8 @@ const CustomerProfile = ({ loggedInUser }) => {
             </label>
             <input
               type="tel"
-              name="phoneNumber"
-              value={user ? user.phoneNumber : ""}
+              name="phone_number"
+              value={user ? user.phone_number : ""}
               onChange={handleChange}
               placeholder="555-123-4567"
               className="mt-1 p-2 w-full border rounded"

@@ -3,44 +3,75 @@ import Button from "../SmallComponents/Button/Button";
 import ToggleButton from "../SmallComponents/ToggleButton";
 import UploadFile from "../SmallComponents/UploadFile";
 import NutritionFactsForm from "./AddNutritionFactForm";
+import { useAuth } from "../AuthProvider";
+import FoodItemTable from "./FoodItemTable";
 
-const AddFoodItemForm = ({ children }) => {
-  const [address, setAddress] = useState({
-    line1: "",
-    city: "",
-    state: "",
-    postalCode: "",
+const AddFoodItemForm = ({ onFoodItemAdded, children }) => {
+  const { loggedInUser } = useAuth();
+  const [foodItem, setFoodItem] = useState({
+    name: "",
+    description: "",
+    price: "",
+    category: "",
+    in_stock: false,
+    nutrition_fact: {},
   });
+
   const [isToggleEnabled, setIsToggleEnabled] = useState(false);
   const [isNutFactToggleEnabled, setIsNutFactToggleEnabled] = useState(false);
 
-  const handleToggleStockChange = () => {
-    setIsToggleEnabled((prevState) => {
-      const newState = !prevState;
-      return newState;
-    });
-  };
-  const handleToggleNutFactChange = () => {
-    setIsNutFactToggleEnabled((prevState) => {
-      const newState = !prevState;
-      return newState;
-    });
-  };
-
   const handleChange = (e) => {
-    setAddress({ ...address, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFoodItem((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleAddAddress = (e) => {
+  const handleToggleStockChange = () => {
+    setFoodItem((prev) => {
+      const updatedInStock = !prev.in_stock;
+      setIsToggleEnabled(updatedInStock);
+      return { ...prev, in_stock: updatedInStock };
+    });
+  };
+
+  const handleNutritionFactsChange = (nutritionFacts) => {
+    setFoodItem((prev) => ({ ...prev, nutrition_fact: nutritionFacts }));
+  };
+
+  const handleToggleNutFactChange = () => {
+    setIsNutFactToggleEnabled((prev) => !prev);
+  };
+
+  const handleAddFoodItem = (e) => {
     e.preventDefault();
-    // Handle the add address action here (e.g., save to database or display)
-    console.log("Address added:", address);
+    fetch(
+      `http://localhost:5000/restaurant/${loggedInUser.restaurant_id}/food`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(foodItem),
+      }
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to add food item");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Food item added:", data);
+        onFoodItemAdded(); // Call onFoodItemAdded callback here
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
 
   return (
     <div className="bg-white rounded-lg mt-4">
       <h1 className="text-gray-700 text-2xl mb-4">{children}</h1>
-      <form className="space-y-4" onSubmit={handleAddAddress}>
+      <form className="space-y-4" onSubmit={handleAddFoodItem}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -48,7 +79,10 @@ const AddFoodItemForm = ({ children }) => {
             </label>
             <input
               type="text"
+              required
               name="name"
+              onChange={handleChange}
+              value={foodItem.name}
               placeholder="Name"
               className="mt-1 p-2 w-full border rounded"
             />
@@ -60,6 +94,8 @@ const AddFoodItemForm = ({ children }) => {
             <input
               type="text"
               name="description"
+              onChange={handleChange}
+              value={foodItem.description}
               placeholder="Description"
               className="mt-1 p-2 w-full border rounded"
             />
@@ -71,6 +107,9 @@ const AddFoodItemForm = ({ children }) => {
             </label>
             <input
               type="number"
+              required
+              value={foodItem.price}
+              onChange={handleChange}
               name="price"
               placeholder="Do not include dollar sign"
               className="mt-1 p-2 w-full border rounded"
@@ -82,6 +121,9 @@ const AddFoodItemForm = ({ children }) => {
             </label>
             <input
               type="text"
+              required
+              value={foodItem.category}
+              onChange={handleChange}
               name="category"
               placeholder="Category here eg. Salad, Indian"
               className="mt-1 p-2 w-full border rounded"
@@ -106,7 +148,9 @@ const AddFoodItemForm = ({ children }) => {
             <UploadFile children="Upload Photo" />
             <Button type="submit" children="Add Item" />
           </div>
-          {isNutFactToggleEnabled ? <NutritionFactsForm /> : <></>}
+          {isNutFactToggleEnabled && (
+            <NutritionFactsForm onChange={handleNutritionFactsChange} />
+          )}
         </div>
       </form>
     </div>

@@ -3,7 +3,7 @@ import React from "react";
 const Dashboard = ({ role }) => {
   return (
     <div className="grid grid-cols-2 gap-4">
-      {role === "restaurant_owner" ? (
+      {role === "owner" ? (
         <>
           <div className="bg-blue-100 p-6 rounded-lg text-center">
             <h3 className="text-lg font-semibold">Total Revenue this month</h3>

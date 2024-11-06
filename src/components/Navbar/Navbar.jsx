@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { FaUserCircle, FaUser, FaShoppingCart } from "react-icons/fa";
 import CenterModal from "../SmallComponents/CenterModal";
 import LoginPopup from "../LoginPopup/LoginPopup";
+import { useAuth } from "../AuthProvider";
 
 const Navbar = () => {
   const { getTotalQuantity } = useContext(StoreContext);
@@ -16,6 +17,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const navigate = useNavigate();
+  const { loggedInUser, logoutUser } = useAuth();
   // Toggle the dropdown visibility
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -23,20 +25,14 @@ const Navbar = () => {
 
   const logoutHandle = () => {
     // Clear the logged-in users from sessionStorage
-    sessionStorage.removeItem("loginUser");
-
-    // Optionally, reset any application state or perform additional logout logic here
-    // e.g., redirect to home or show a notification
+    logoutUser();
 
     // Close the dropdown menu after logout
     setIsOpen(false);
     setMenu(""); // Reset menu state if needed
-    alert("You have been logged out."); // Notify the user (optional)
     navigate("/");
   };
 
-  const loggedInUser = JSON.parse(sessionStorage.getItem("loginUser"));
-  console.log("loggedInuser", loggedInUser);
   return (
     <div className="navbar">
       <Link to="/">

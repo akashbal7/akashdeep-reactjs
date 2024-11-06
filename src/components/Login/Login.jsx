@@ -2,11 +2,14 @@
 import React, { useState } from "react";
 import { assets } from "../../assets/assets";
 import Button from "../SmallComponents/Button/Button";
+import { useAuth } from "../AuthProvider";
 
 const Login = ({ setShowLogin, setShowRegister }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  const { loginUser } = useAuth();
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -34,16 +37,23 @@ const Login = ({ setShowLogin, setShowRegister }) => {
 
       const data = await response.json();
       // Here you can save the user data or role to session storage or state
-      console.log(data);
       const createLogin = {
-        id: data.id, // Using a timestamp as a unique ID
+        id: data.data.id, // Using a timestamp as a unique ID
         email: email,
         isLogedIn: true,
-        role: data.role,
+        first_name: data.data.first_name,
+        last_name: data.data.last_name,
+        full_name: data.data.full_name,
+        role: data.data.role,
+        status: data.data.status,
+        token: data.data.token,
+        restaurant_id: data.data.restaurant_id,
       };
 
+      // Assume response contains user data after login
+      loginUser(createLogin);
+
       // Save logged-in user to session storage
-      sessionStorage.setItem("loginUser", JSON.stringify(createLogin));
 
       // Clear form fields and error message
       setEmail("");

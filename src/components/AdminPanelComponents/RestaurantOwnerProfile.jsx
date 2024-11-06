@@ -2,84 +2,155 @@ import React, { useState, useEffect } from "react";
 import Button from "../SmallComponents/Button/Button";
 import { useNavigate } from "react-router-dom";
 import Address from "./Address";
+import { useAuth } from "../AuthProvider";
 
 const RestaurantOwnerProfile = ({ loggedInUser }) => {
   const [user, setUser] = useState({
-    username: "",
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
     email: "",
-    phoneNumber: "",
-    // Initialize any other fields you have
+    phone_number: "",
+    restaurant: {
+      name: "",
+      about: "",
+      description: "",
+      phone_number: "",
+      website: "",
+      sitting_capacity: "",
+      address: {
+        address_line_1: "",
+        address_line_2: "",
+        city: "",
+        country: "",
+        postal_code: "",
+        state: "",
+      },
+    },
   });
+  console.log("res id", user.restaurant.id);
+
+  const [address, setAddress] = useState({});
   const navigate = useNavigate();
 
-  const restaurant = {};
+  const fetchUserData = () => {
+    fetch(`http://localhost:5000/user/${loggedInUser.id}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch user data");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setUser(data);
+        setAddress(data.restaurant.address);
+      })
+      .catch((err) => {
+        console.error(err.message);
+        setError("Failed to fetch user data"); // Set error state
+      });
+  };
 
   useEffect(() => {
-    // Fetch users from local storage
-    const usersDetail = JSON.parse(sessionStorage.getItem("users")) || [];
-    console.log(loggedInUser.email);
-    const foundUser = usersDetail.find((u) => u.email === loggedInUser?.email);
-    setUser(foundUser);
-    console.log("user", foundUser);
-
-    if (foundUser) {
-      setUser(foundUser);
-    } else {
-      alert("Please log in");
-      navigate("/");
-    }
-  }, [navigate]); // Empty dependency array ensures this runs only once
+    fetchUserData(); // Fetch user data on component mount
+  }, [loggedInUser.id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUser((prevUser) => ({
-      ...prevUser,
-      [name]: value,
-    }));
+
+    if (
+      [
+        "name",
+        "description",
+        "phone_number",
+        "website",
+        "about",
+        "sitting_capacity",
+      ].includes(name)
+    ) {
+      setUser((prevUser) => ({
+        ...prevUser,
+        restaurant: {
+          ...prevUser.restaurant,
+          [name]: value,
+        },
+      }));
+    } else {
+      // For other fields directly on user
+      setUser((prevUser) => ({
+        ...prevUser,
+        [name]: value,
+      }));
+    }
   };
 
-  const handleSaveChanges = () => {
-    const usersDetail = JSON.parse(sessionStorage.getItem("users")) || [];
-
-    // Debugging: Log the current usersDetail array
-    console.log("Current users in session:", usersDetail);
-
-    // Remove the old user object that matches the email
-    const updatedUsersDetail = usersDetail.filter(
-      (u) => u.email !== user.email
-    );
-
-    // Debugging: Log the updated usersDetail array after filtering
-    console.log("Updated users after removal:", updatedUsersDetail);
-
-    // Add the updated user object to the array
-    updatedUsersDetail.push(user);
-
-    // Store the updated user list back in session storage
-    sessionStorage.setItem("users", JSON.stringify(updatedUsersDetail));
-
-    // Debugging: Log the new state of usersDetail in session storage
-    console.log(
-      "New users in session after update:",
-      JSON.parse(sessionStorage.getItem("users"))
-    );
-
-    alert("Profile updated successfully!");
+  const handleSaveChanges = (e) => {
+    e.preventDefault();
+    fetch(`http://localhost:5000/restaurant/${loggedInUser.restaurant_id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        first_name: user.first_name,
+        last_name: user.last_name,
+        about: user.restaurant.about,
+        phone_number: user.restaurant.phone_number,
+        restaurant_name: user.restaurant.name,
+        sitting_capacity: user.restaurant.sitting_capacity,
+        website: user.restaurant.website,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to update user");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        fetchUserData(); // Call the fetch function again to get the updated data
+      })
+      .catch((error) => {
+        console.error("Error updating user:", error);
+        setError("Failed to update user");
+      });
   };
   return (
     <div className="bg-white shadow-lg rounded-lg p-6">
       <h2 className="text-gray-700 text-2xl mb-4">Restaurant Details</h2>
-      <form className="space-y-4">
+      <form className="space-y-4" onSubmit={handleSaveChanges}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              First Name
+            </label>
+            <input
+              type="text"
+              name="first_name"
+              value={user.first_name}
+              onChange={handleChange}
+              className="mt-1 p-2 w-full border rounded"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Last Name
+            </label>
+            <input
+              type="text"
+              name="last_name"
+              value={user.last_name}
+              onChange={handleChange}
+              className="mt-1 p-2 w-full border rounded"
+            />
+          </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Restaurant Name
             </label>
             <input
               type="text"
-              value={restaurant ? restaurant?.name : ""}
+              name="name"
+              value={user.restaurant.name}
               onChange={handleChange}
               className="mt-1 p-2 w-full border rounded"
             />
@@ -90,7 +161,8 @@ const RestaurantOwnerProfile = ({ loggedInUser }) => {
               About
             </label>
             <textarea
-              value={restaurant ? restaurant?.description : ""}
+              name="about"
+              value={user.restaurant.about}
               onChange={handleChange}
               className="mt-1 p-2 w-full border rounded"
               rows="1"
@@ -102,7 +174,8 @@ const RestaurantOwnerProfile = ({ loggedInUser }) => {
             </label>
             <input
               type="tel"
-              value={restaurant ? restaurant?.phone : ""}
+              name="phone_number"
+              value={user.restaurant.phone_number}
               onChange={handleChange}
               className="mt-1 p-2 w-full border rounded"
             />
@@ -114,8 +187,9 @@ const RestaurantOwnerProfile = ({ loggedInUser }) => {
             </label>
             <input
               type="email"
+              name="email"
               disabled
-              value={restaurant ? restaurant?.email : ""}
+              value={user.email}
               className="mt-1 p-2 w-full border rounded"
             />
           </div>
@@ -125,40 +199,9 @@ const RestaurantOwnerProfile = ({ loggedInUser }) => {
               Website
             </label>
             <input
-              type="url"
-              value={restaurant ? restaurant?.website : ""}
-              onChange={handleChange}
-              className="mt-1 p-2 w-full border rounded"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Opening Hours
-            </label>
-            <input
               type="text"
-              onChange={handleChange}
-              value={`${
-                restaurant && restaurant?.openingHours
-                  ? restaurant?.openingHours?.days
-                  : ""
-              } ${
-                restaurant && restaurant?.openingHours
-                  ? restaurant.openingHours?.hours
-                  : ""
-              }`}
-              className="mt-1 p-2 w-full border rounded"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Cuisine
-            </label>
-            <input
-              type="text"
-              value={restaurant ? restaurant?.cuisine : ""}
+              name="website"
+              value={user.restaurant.website}
               onChange={handleChange}
               className="mt-1 p-2 w-full border rounded"
             />
@@ -170,16 +213,21 @@ const RestaurantOwnerProfile = ({ loggedInUser }) => {
             </label>
             <input
               type="text"
-              value={restaurant ? restaurant?.capacity : ""}
+              name="sitting_capacity"
+              value={user.restaurant.sitting_capacity}
               onChange={handleChange}
               className="mt-1 p-2 w-full border rounded"
             />
           </div>
         </div>
-        <Button type="button" children="Edit Profile" />
+        <Button type="submit" children="Edit Profile" />
       </form>
       <div>
-        <Address />
+        <Address
+          addressObj={address}
+          restaurantId={loggedInUser.restaurant_id}
+          addressId={user.restaurant.address.id}
+        />
       </div>
     </div>
   );

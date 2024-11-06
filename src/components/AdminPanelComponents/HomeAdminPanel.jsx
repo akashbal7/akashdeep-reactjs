@@ -10,9 +10,13 @@ import OrderHistoryTable from "./OrderHistoryTable";
 import RestaurantOwnerProfile from "./RestaurantOwnerProfile";
 import AddFoodItemForm from "./AddFoodItemForm";
 import AddCuisineForm from "./AddCuisineForm";
+import { useAuth } from "../AuthProvider";
 
 const HomeAdminPanel = () => {
-  const loggedInUser = JSON.parse(sessionStorage.getItem("loginUser"));
+  const { loggedInUser } = useAuth();
+  let first_name = loggedInUser.first_name;
+  let last_name = loggedInUser.last_name;
+
   const role = loggedInUser?.role;
   const [showActiveSidebarTab, setShowActiveSidebarTab] = useState("1");
   const [showAddItemForm, setShowAddItemForm] = useState(false);
@@ -27,12 +31,13 @@ const HomeAdminPanel = () => {
       <div className=" bg-white border-r">
         <div className="flex items-center gap-2 mb-8 p-6">
           <div className="bg-blue-500 rounded-full h-10 w-10 flex items-center justify-center text-white font-bold">
-            CL
+            {first_name.charAt(0)}
+            {last_name.charAt(0)}
           </div>
-          <h1 className="text-xl font-semibold">Codinglab</h1>
+          <h1 className="text-xl font-semibold">{loggedInUser.full_name}</h1>
         </div>
 
-        {role === "restaurant_owner" ? (
+        {role === "owner" ? (
           <ul className="">
             <li
               className={
@@ -142,7 +147,7 @@ const HomeAdminPanel = () => {
               placeholder="Search here..."
               className="border border-gray-300 rounded-md p-2 w-1/2"
             />
-            {showActiveSidebarTab !== "5" && role === "restaurant_owner" ? (
+            {showActiveSidebarTab !== "5" && role === "owner" ? (
               (console.log("insideeee"),
               (
                 <Button
@@ -159,7 +164,7 @@ const HomeAdminPanel = () => {
         )}
 
         {!showAddItemForm ? (
-          role === "restaurant_owner" ? (
+          role === "owner" ? (
             <div className="">
               {showActiveSidebarTab === "1" ? (
                 <Dashboard role={role} />
@@ -168,7 +173,7 @@ const HomeAdminPanel = () => {
               ) : showActiveSidebarTab === "3" ? (
                 <Cuisines />
               ) : showActiveSidebarTab === "4" ? (
-                <FoodItemTable />
+                <FoodItemTable loggedInUser={loggedInUser} />
               ) : showActiveSidebarTab === "5" ? (
                 <ReviewTable />
               ) : (
@@ -191,7 +196,12 @@ const HomeAdminPanel = () => {
         ) : showActiveSidebarTab === "3" ? (
           <AddCuisineForm children="Add Cuisine" />
         ) : showActiveSidebarTab === "4" ? (
-          <AddFoodItemForm children="Add Food Item" />
+          <AddFoodItemForm
+            onFoodItemAdded={() => {
+              setShowAddItemForm(false);
+            }}
+            children="Add Food Item"
+          />
         ) : (
           <></>
         )}
