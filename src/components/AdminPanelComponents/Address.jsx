@@ -92,6 +92,7 @@ const Address = ({ addressObj, restaurantId, addressId }) => {
             <input
               type="text"
               name="address_line_1"
+              required
               value={address ? address?.address_line_1 : ""}
               onChange={handleChange}
               className="mt-1 p-2 w-full border rounded"
@@ -116,6 +117,7 @@ const Address = ({ addressObj, restaurantId, addressId }) => {
             </label>
             <input
               type="text"
+              required
               name="city"
               value={address ? address?.city : ""}
               onChange={handleChange}
@@ -128,6 +130,7 @@ const Address = ({ addressObj, restaurantId, addressId }) => {
             </label>
             <input
               type="text"
+              required
               name="state"
               value={address ? address?.state : ""}
               onChange={handleChange}
@@ -140,6 +143,7 @@ const Address = ({ addressObj, restaurantId, addressId }) => {
             </label>
             <input
               type="text"
+              required
               name="postal_code"
               value={address ? address?.postal_code : ""}
               onChange={handleChange}
@@ -152,6 +156,7 @@ const Address = ({ addressObj, restaurantId, addressId }) => {
             </label>
             <input
               type="text"
+              required
               name="country"
               value={address ? address?.country : ""}
               onChange={handleChange}
