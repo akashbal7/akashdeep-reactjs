@@ -1,13 +1,28 @@
-import React, { useContext } from "react";
+import React, { useEffect, useState } from "react";
 import "./FoodDisplay.css";
-import { StoreContext } from "../../context/StoreContext";
 import FoodItem from "../FoodItem/FoodItem";
-import QuantitySelector from "../SmallComponents/QuantitySelector";
 
 const FoodDisplay = ({ category }) => {
-  const { food_list } = useContext(StoreContext);
+  const [food_list, setFoodList] = useState([]);
   const displayedFoodItems =
     category === "All" ? food_list.slice(0, 6) : food_list;
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch("http://localhost:5000/foods");
+        if (!response.ok) {
+          throw new Error("Failed to fetch foods");
+        }
+        const data = await response.json();
+        setFoodList(data.foods); // Store foods array in context
+      } catch (error) {
+        console.error("Error fetching foods:", error);
+      }
+    }
+    fetchData();
+  }, []);
+
   return (
     <div className="food-display" id="food-display">
       <h2>Top Dishes Near You</h2>
@@ -17,11 +32,11 @@ const FoodDisplay = ({ category }) => {
             return (
               <FoodItem
                 key={index}
-                id={item._id}
+                id={item.id}
                 name={item.name}
                 description={item.description}
                 price={item.price}
-                image={item.image}
+                image={`data:image/png;base64,${item.image_data}`}
               />
             );
           }

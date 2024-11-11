@@ -1,11 +1,9 @@
 import React, { useContext } from "react";
 import "./FoodItem.css";
-import { assets } from "../../assets/assets";
 import { StoreContext } from "../../context/StoreContext";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Button from "../SmallComponents/Button/Button";
 import Rating from "../SmallComponents/Rating";
-import FoodItemCounter from "../FoodItemCounter";
 import QuantitySelector from "../SmallComponents/QuantitySelector";
 
 const FoodItem = ({ id, name, price, description, image }) => {

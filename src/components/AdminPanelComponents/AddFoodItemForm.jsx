@@ -8,17 +8,22 @@ import FoodItemTable from "./FoodItemTable";
 
 const AddFoodItemForm = ({ onFoodItemAdded, children }) => {
   const { loggedInUser } = useAuth();
+  const [imageFile, setImageFile] = useState(null);
+  const [isToggleEnabled, setIsToggleEnabled] = useState(false);
+  const [isNutFactToggleEnabled, setIsNutFactToggleEnabled] = useState(false);
   const [foodItem, setFoodItem] = useState({
     name: "",
     description: "",
     price: "",
     category: "",
     in_stock: false,
+    has_nutrition_fact: false,
     nutrition_fact: {},
   });
 
-  const [isToggleEnabled, setIsToggleEnabled] = useState(false);
-  const [isNutFactToggleEnabled, setIsNutFactToggleEnabled] = useState(false);
+  const handleFileChange = (e) => {
+    setImageFile(e.target.files[0]); // Store the selected image file
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,19 +43,31 @@ const AddFoodItemForm = ({ onFoodItemAdded, children }) => {
   };
 
   const handleToggleNutFactChange = () => {
-    setIsNutFactToggleEnabled((prev) => !prev);
+    setIsNutFactToggleEnabled((prev) => {
+      const updatedInNutri = !prev.has_nutrition_fact;
+      setIsNutFactToggleEnabled(updatedInNutri);
+      return { ...prev, has_nutrition_fact: updatedInNutri };
+    });
   };
 
   const handleAddFoodItem = (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append("name", foodItem.name);
+    formData.append("description", foodItem.description);
+    formData.append("price", foodItem.price);
+    formData.append("category", foodItem.category);
+    formData.append("in_stock", foodItem.in_stock);
+    formData.append("has_nutrition_fact", foodItem.has_nutrition_fact);
+    formData.append("nutrition_fact", JSON.stringify(foodItem.nutrition_fact));
+    if (imageFile) {
+      formData.append("image", imageFile); // Append the image file
+    }
     fetch(
       `http://localhost:5000/restaurant/${loggedInUser.restaurant_id}/food`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(foodItem),
+        body: formData,
       }
     )
       .then((response) => {
@@ -145,7 +162,7 @@ const AddFoodItemForm = ({ onFoodItemAdded, children }) => {
             />
           </div>
           <div>
-            <UploadFile children="Upload Photo" />
+            <UploadFile onChange={handleFileChange} children="Upload Photo" />
             <Button type="submit" children="Add Item" />
           </div>
           {isNutFactToggleEnabled && (
