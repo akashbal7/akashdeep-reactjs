@@ -11,15 +11,36 @@ import CenterModal from "../SmallComponents/CenterModal";
 import RatingForm from "../RatingForm";
 import FoodItemCounter from "../FoodItemCounter";
 import QuantitySelector from "../SmallComponents/QuantitySelector";
+import Spinner from "../SmallComponents/Spinner";
 
 const ProductCard = () => {
   const { id } = useParams();
   const { food_list, cartItems, addToCart, removeFromCart } =
     useContext(StoreContext);
+  const [product, setProduct] = useState(null);
+  const [nutrition, setNutritionFact] = useState(null);
   const [isGiveReviewModalOpen, setIsGiveReviewModalOpen] = useState(false); // Modal visibility state
   const [isSeeReviewModalOpen, setIsSeeReviewModalOpen] = useState(false);
   const modalRef = useRef(null);
-  const product = food_list.find((product) => product._id === id);
+
+  useEffect(() => {
+    // Fetch product details from API
+    const fetchProduct = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:5000/restaurant/3/food/${id}`
+        );
+        const data = await response.json();
+        setProduct(data); // Set the fetched data to product state
+        if (data.has_nutrition_fact) {
+          setNutritionFact(data.nutrition_facts);
+        }
+      } catch (error) {
+        console.error("Error fetching product:", error);
+      }
+    };
+    fetchProduct();
+  }, [id]);
 
   // Function to close the modal when clicking outside
   const handleClickOutside = (event) => {
@@ -59,6 +80,9 @@ const ProductCard = () => {
     setIsGiveReviewModalOpen(false);
     setIsSeeReviewModalOpen(false);
   };
+  if (!product) {
+    return <Spinner />;
+  }
   return (
     <div className="bg-white p-4 rounded-lg shadow-lg max-w-6xl mx-auto">
       <div className="flex mb-4 flex-col md:flex-row">
@@ -75,15 +99,18 @@ const ProductCard = () => {
                   <Rating rating={4} />
                   <span className="ml-2">955 reviews</span>
                 </div>
-                <p className="text-gray-500">Chinese, italian</p>
+                <p className="text-gray-500">{product.category}</p>
               </div>
               <div>
-                <p className="text-2xl font-semibold text-gray-800">£41.10</p>
-                <p className="text-green-600 font-medium">In Stock</p>
+                <p className="text-2xl font-semibold text-gray-800">
+                  ${product.price}
+                </p>
+                <p className="text-green-600 font-medium">
+                  {product.in_stock ? "In Stock" : "Out of Stock"}
+                </p>
               </div>
             </div>
             <QuantitySelector />
-            {/* Add to Cart Button */}
           </div>
 
           <div className="">
@@ -92,56 +119,53 @@ const ProductCard = () => {
               <p className="text-sm text-gray-600">Serving Size about 82g</p>
 
               <div className="border-t border-black mt-1"></div>
-              <div className="text-sm ">
+              <div className="text-sm">
                 <p className="flex justify-between">
-                  <span>Calories 200</span>
-                  <span>Calories from Fat 130</span>
+                  <span>Calories {nutrition.calories || "N/A"}</span>
+                  <span>
+                    Calories from Fat {nutrition.calories_from_fat || "N/A"}
+                  </span>
                 </p>
-
                 <div className="border-t border-black my-1"></div>
                 <div className="flex justify-end">
                   <span className="">% daily value</span>
                 </div>
-                <div>
-                  <p className="flex justify-between">
-                    <span>Total Fat 14g</span>
-                    <span>22%</span>
-                  </p>
-                  <div className="ml-2">
-                    <p className="flex justify-between text-gray-500">
-                      <span>Saturated Fat 9g</span>
-                      <span>22%</span>
-                    </p>
-                    <p className="flex justify-between text-gray-500">
-                      <span>Trans Fat 0g</span>
-                    </p>
-                  </div>
-                </div>
                 <p className="flex justify-between">
-                  <span>Cholesterol 55mg</span>
-                  <span>18%</span>
+                  <span>Total Fat {nutrition.total_fat_g || "N/A"}g</span>
+                  <span>{nutrition.total_fat_percent || "N/A"}%</span>
+                </p>
+                <p className="flex justify-between ml-4 text-gray-500">
+                  <span>
+                    Saturated Fat {nutrition.saturated_fat_g || "N/A"}g
+                  </span>
+                  <span>{nutrition.saturated_fat_percent || "N/A"}%</span>
                 </p>
                 <p className="flex justify-between">
-                  <span>Sodium 40mg</span>
-                  <span>2%</span>
+                  <span>Cholesterol {nutrition.cholesterol_mg || "N/A"}mg</span>
+                  <span>{nutrition.cholesterol_percent || "N/A"}%</span>
                 </p>
-                <div>
-                  <p className="flex justify-between">
-                    <span>Total Carbohydrate 17g</span>
-                    <span>6%</span>
-                  </p>
-                  <div className="ml-2">
-                    <p className="flex justify-between text-gray-500">
-                      <span>Dietary Fiber 1g</span>
-                      <span>4%</span>
-                    </p>
-                    <p className="flex justify-between text-gray-500">
-                      <span>Sugars 14g</span>
-                    </p>
-                  </div>
-                </div>
                 <p className="flex justify-between">
-                  <span>Protein 3g</span>
+                  <span>Sodium {nutrition.sodium_mg || "N/A"}mg</span>
+                  <span>{nutrition.sodium_percent || "N/A"}%</span>
+                </p>
+                <p className="flex justify-between">
+                  <span>
+                    Total Carbohydrate {nutrition.total_carbohydrate_g || "N/A"}
+                    g
+                  </span>
+                  <span>{nutrition.carbohydrate_percent || "N/A"}%</span>
+                </p>
+                <p className="flex justify-between ml-4 text-gray-500">
+                  <span>
+                    Dietary Fiber {nutrition.dietary_fiber_g || "N/A"}g
+                  </span>
+                  <span>{nutrition.fiber_percent || "N/A"}%</span>
+                </p>
+                <p className="flex justify-between ml-4 text-gray-500">
+                  <span>Sugars {nutrition.sugars_g || "N/A"}g</span>
+                </p>
+                <p className="flex justify-between">
+                  <span>Protein {nutrition.protein_g || "N/A"}g</span>
                 </p>
               </div>
             </div>
@@ -200,7 +224,13 @@ const ProductCard = () => {
       )}
       {isSeeReviewModalOpen && (
         <CenterModal
-          children={<SeeReviews ref={modalRef} onClose={handleCloseModal} />}
+          children={
+            <SeeReviews
+              ref={modalRef}
+              onClose={handleCloseModal}
+              food_id={id}
+            />
+          }
         />
       )}
     </div>

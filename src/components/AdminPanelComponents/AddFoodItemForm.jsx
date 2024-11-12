@@ -43,7 +43,7 @@ const AddFoodItemForm = ({ onFoodItemAdded, children }) => {
   };
 
   const handleToggleNutFactChange = () => {
-    setIsNutFactToggleEnabled((prev) => {
+    setFoodItem((prev) => {
       const updatedInNutri = !prev.has_nutrition_fact;
       setIsNutFactToggleEnabled(updatedInNutri);
       return { ...prev, has_nutrition_fact: updatedInNutri };
