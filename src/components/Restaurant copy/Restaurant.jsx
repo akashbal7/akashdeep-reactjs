@@ -207,7 +207,13 @@ const RestaurantPage = () => {
       )}
       {isSeeReviewModalOpen && (
         <CenterModal
-          children={<SeeReviews ref={modalRef} onClose={handleCloseModal} />}
+          children={
+            <SeeReviews
+              ref={modalRef}
+              onClose={handleCloseModal}
+              reviewType="restaurant"
+            />
+          }
         />
       )}
     </div>

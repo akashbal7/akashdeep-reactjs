@@ -1,37 +1,84 @@
 import React, { useState } from "react";
 import Button from "../SmallComponents/Button/Button";
-import ToggleButton from "../SmallComponents/ToggleButton";
+import { useAuth } from "../AuthProvider";
+import ToastNotification from "../ToastNotification";
 
-const AddCuisineForm = ({ children }) => {
-  const [address, setAddress] = useState({
-    line1: "",
-    city: "",
-    state: "",
-    postalCode: "",
-  });
-  const [isToggleEnabled, setIsToggleEnabled] = useState(false);
-
-  const handleToggleChange = () => {
-    setIsToggleEnabled((prevState) => {
-      const newState = !prevState;
-      return newState;
-    });
-  };
+const AddCuisineForm = ({ onFoodItemAdded, children }) => {
+  const { loggedInUser } = useAuth();
+  const [isMessagePopUpModalOpen, setIsMessagePopUpModalOpen] = useState(false);
+  const [apiMessage, setApiMessage] = useState("");
+  const [isApiSuccess, setIsApiSuccess] = useState(true);
+  const [error, setError] = useState(""); // State for error message
+  const [name, setName] = useState(""); // State to manage name input
+  const [description, setDescription] = useState(""); // State to manage description input
+  const [isSubmitting, setIsSubmitting] = useState(false); // State for submit loading
 
   const handleChange = (e) => {
-    setAddress({ ...address, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name === "name") {
+      setName(value);
+    } else if (name === "description") {
+      setDescription(value);
+    }
   };
 
-  const handleAddAddress = (e) => {
+  const handleAddCategory = async (e) => {
     e.preventDefault();
-    // Handle the add address action here (e.g., save to database or display)
-    console.log("Address added:", address);
+
+    // Set loading state
+    setIsSubmitting(true);
+    setError(""); // Reset error on new submission
+
+    const categoryData = {
+      name: name,
+      description: description,
+    };
+
+    console.log("Submitting category data:", categoryData, loggedInUser);
+
+    fetch(
+      `http://localhost:5000/restaurant/${loggedInUser.restaurant_id}/category`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(categoryData),
+      }
+    )
+      .then((response) => {
+        if (!response.ok) {
+          setIsMessagePopUpModalOpen(true);
+          setTimeout(() => setIsMessagePopUpModalOpen(false), 8000);
+          throw new Error("Failed to add category");
+        }
+        return response.json(); // Parse response data
+      })
+      .then((data) => {
+        setApiMessage(data.message);
+        setIsMessagePopUpModalOpen(true);
+        setTimeout(() => setIsMessagePopUpModalOpen(false), 8000);
+
+        // Clear form fields after a successful submission
+        setName("");
+        setDescription("");
+        onFoodItemAdded();
+      })
+      .catch((error) => {
+        console.error("Error adding category:", error);
+        setApiMessage(error.message || "An error occurred");
+        setIsMessagePopUpModalOpen(true);
+        setTimeout(() => setIsMessagePopUpModalOpen(false), 8000);
+      })
+      .finally(() => {
+        setIsSubmitting(false); // Reset loading state
+      });
   };
 
   return (
     <div className="bg-white rounded-lg mt-4">
       <h1 className="text-gray-700 text-2xl mb-4">{children}</h1>
-      <form className="space-y-4" onSubmit={handleAddAddress}>
+      <form className="space-y-4" onSubmit={handleAddCategory}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -40,8 +87,11 @@ const AddCuisineForm = ({ children }) => {
             <input
               type="text"
               name="name"
-              placeholder="Name"
+              value={name}
+              onChange={handleChange}
+              placeholder="Category Name"
               className="mt-1 p-2 w-full border rounded"
+              required
             />
           </div>
           <div>
@@ -51,43 +101,19 @@ const AddCuisineForm = ({ children }) => {
             <input
               type="text"
               name="description"
-              placeholder="Description"
+              value={description}
+              onChange={handleChange}
+              placeholder="Category Description"
               className="mt-1 p-2 w-full border rounded"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Price
-            </label>
-            <input
-              type="number"
-              name="price"
-              placeholder="Do not include dollar sign"
-              className="mt-1 p-2 w-full border rounded"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Category
-            </label>
-            <input
-              type="text"
-              name="category"
-              placeholder="Category here eg. Salad, Indian"
-              className="mt-1 p-2 w-full border rounded"
-            />
-          </div>
-          <div>
-            <ToggleButton
-              isEnabled={isToggleEnabled}
-              handleToggleChange={handleToggleChange}
-              children="In Stock"
+              required
             />
           </div>
         </div>
         <Button type="submit" children="Add Item" />
       </form>
+      {isMessagePopUpModalOpen && (
+        <ToastNotification isSuccess={isApiSuccess} message={apiMessage} />
+      )}
     </div>
   );
 };

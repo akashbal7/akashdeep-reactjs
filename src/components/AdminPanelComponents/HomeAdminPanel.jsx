@@ -71,7 +71,7 @@ const HomeAdminPanel = () => {
                 setShowActiveSidebarTab("3"), setShowAddItemForm(false);
               }}
             >
-              <span className="material-icons"></span> Cuisines
+              <span className="material-icons"></span> Categories
             </li>
             <li
               className={
@@ -95,7 +95,20 @@ const HomeAdminPanel = () => {
                 setShowActiveSidebarTab("5"), setShowAddItemForm(false);
               }}
             >
-              <span className="material-icons"></span> Reviews
+              <span className="material-icons"></span> Food Reviews
+            </li>
+
+            <li
+              className={
+                showActiveSidebarTab == "6"
+                  ? defaultClassWithTextBlue
+                  : defaultClassWithTextBlack
+              }
+              onClick={() => {
+                setShowActiveSidebarTab("6"), setShowAddItemForm(false);
+              }}
+            >
+              <span className="material-icons"></span> Restaurant Reviews
             </li>
           </ul>
         ) : (
@@ -171,11 +184,13 @@ const HomeAdminPanel = () => {
               ) : showActiveSidebarTab === "2" ? (
                 <RestaurantOwnerProfile loggedInUser={loggedInUser} />
               ) : showActiveSidebarTab === "3" ? (
-                <Cuisines />
+                <Cuisines loggedInUser={loggedInUser} />
               ) : showActiveSidebarTab === "4" ? (
                 <FoodItemTable loggedInUser={loggedInUser} />
               ) : showActiveSidebarTab === "5" ? (
-                <ReviewTable />
+                <ReviewTable reviewType="food" />
+              ) : showActiveSidebarTab === "6" ? (
+                <ReviewTable reviewType="restaurant" />
               ) : (
                 <></>
               )}
@@ -194,7 +209,12 @@ const HomeAdminPanel = () => {
             </div>
           )
         ) : showActiveSidebarTab === "3" ? (
-          <AddCuisineForm children="Add Cuisine" />
+          <AddCuisineForm
+            onFoodItemAdded={() => {
+              setShowAddItemForm(false);
+            }}
+            children="Add Category"
+          />
         ) : showActiveSidebarTab === "4" ? (
           <AddFoodItemForm
             onFoodItemAdded={() => {

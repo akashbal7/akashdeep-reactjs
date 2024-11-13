@@ -99,7 +99,14 @@ const ProductCard = () => {
                   <Rating rating={4} />
                   <span className="ml-2">955 reviews</span>
                 </div>
-                <p className="text-gray-500">{product.category}</p>
+                <p className="text-gray-500">
+                  {product.categories && product.categories.length > 0
+                    ? product.categories
+                        .map((category) => category.name)
+                        .join(", ")
+                    : "No category"}
+                </p>
+                <p className="text-gray-500">{product.description}</p>
               </div>
               <div>
                 <p className="text-2xl font-semibold text-gray-800">
@@ -113,63 +120,74 @@ const ProductCard = () => {
             <QuantitySelector />
           </div>
 
-          <div className="">
-            <div className="bg-gray-100 p-2 rounded-2xl shadow-slate-300 shadow-lg">
-              <h3 className="text-xl font-semibold">Nutrition Facts</h3>
-              <p className="text-sm text-gray-600">Serving Size about 82g</p>
+          {product.has_nutrition_fact ? (
+            <div className="">
+              <div className="bg-gray-100 p-2 rounded-2xl shadow-slate-300 shadow-lg">
+                <h3 className="text-xl font-semibold">Nutrition Facts</h3>
+                <p className="text-sm text-gray-600">Serving Size about 82g</p>
 
-              <div className="border-t border-black mt-1"></div>
-              <div className="text-sm">
-                <p className="flex justify-between">
-                  <span>Calories {nutrition.calories || "N/A"}</span>
-                  <span>
-                    Calories from Fat {nutrition.calories_from_fat || "N/A"}
-                  </span>
-                </p>
-                <div className="border-t border-black my-1"></div>
-                <div className="flex justify-end">
-                  <span className="">% daily value</span>
+                <div className="border-t border-black mt-1"></div>
+                <div className="text-sm">
+                  <p className="flex justify-between">
+                    <span>Calories {nutrition.calories || "N/A"}</span>
+                    <span>
+                      Calories from Fat {nutrition.calories_from_fat || "N/A"}
+                    </span>
+                  </p>
+                  <div className="border-t border-black my-1"></div>
+                  <div className="flex justify-end">
+                    <span className="">% daily value</span>
+                  </div>
+                  <p className="flex justify-between">
+                    <span>Total Fat {nutrition.total_fat_g || "N/A"}g</span>
+                    <span>{nutrition.total_fat_percent || "N/A"}%</span>
+                  </p>
+                  <p className="flex justify-between ml-4 text-gray-500">
+                    <span>
+                      Saturated Fat {nutrition.saturated_fat_g || "N/A"}g
+                    </span>
+                    <span>{nutrition.saturated_fat_percent || "N/A"}%</span>
+                  </p>
+                  <p className="flex justify-between">
+                    <span>
+                      Cholesterol {nutrition.cholesterol_mg || "N/A"}mg
+                    </span>
+                    <span>{nutrition.cholesterol_percent || "N/A"}%</span>
+                  </p>
+                  <p className="flex justify-between">
+                    <span>Sodium {nutrition.sodium_mg || "N/A"}mg</span>
+                    <span>{nutrition.sodium_percent || "N/A"}%</span>
+                  </p>
+                  <p className="flex justify-between">
+                    <span>
+                      Total Carbohydrate{" "}
+                      {nutrition.total_carbohydrate_g || "N/A"}g
+                    </span>
+                    <span>{nutrition.carbohydrate_percent || "N/A"}%</span>
+                  </p>
+                  <p className="flex justify-between ml-4 text-gray-500">
+                    <span>
+                      Dietary Fiber {nutrition.dietary_fiber_g || "N/A"}g
+                    </span>
+                    <span>{nutrition.fiber_percent || "N/A"}%</span>
+                  </p>
+                  <p className="flex justify-between ml-4 text-gray-500">
+                    <span>Sugars {nutrition.sugars_g || "N/A"}g</span>
+                  </p>
+                  <p className="flex justify-between">
+                    <span>Protein {nutrition.protein_g || "N/A"}g</span>
+                  </p>
                 </div>
-                <p className="flex justify-between">
-                  <span>Total Fat {nutrition.total_fat_g || "N/A"}g</span>
-                  <span>{nutrition.total_fat_percent || "N/A"}%</span>
-                </p>
-                <p className="flex justify-between ml-4 text-gray-500">
-                  <span>
-                    Saturated Fat {nutrition.saturated_fat_g || "N/A"}g
-                  </span>
-                  <span>{nutrition.saturated_fat_percent || "N/A"}%</span>
-                </p>
-                <p className="flex justify-between">
-                  <span>Cholesterol {nutrition.cholesterol_mg || "N/A"}mg</span>
-                  <span>{nutrition.cholesterol_percent || "N/A"}%</span>
-                </p>
-                <p className="flex justify-between">
-                  <span>Sodium {nutrition.sodium_mg || "N/A"}mg</span>
-                  <span>{nutrition.sodium_percent || "N/A"}%</span>
-                </p>
-                <p className="flex justify-between">
-                  <span>
-                    Total Carbohydrate {nutrition.total_carbohydrate_g || "N/A"}
-                    g
-                  </span>
-                  <span>{nutrition.carbohydrate_percent || "N/A"}%</span>
-                </p>
-                <p className="flex justify-between ml-4 text-gray-500">
-                  <span>
-                    Dietary Fiber {nutrition.dietary_fiber_g || "N/A"}g
-                  </span>
-                  <span>{nutrition.fiber_percent || "N/A"}%</span>
-                </p>
-                <p className="flex justify-between ml-4 text-gray-500">
-                  <span>Sugars {nutrition.sugars_g || "N/A"}g</span>
-                </p>
-                <p className="flex justify-between">
-                  <span>Protein {nutrition.protein_g || "N/A"}g</span>
-                </p>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="bg-gray-100 p-2 rounded-2xl shadow-slate-300 shadow-lg">
+              <h3 className="text-xl font-semibold">Nutrition Facts</h3>
+              <div className="h-56 grid content-center flex justify-center">
+                <p>Nutrition Fact not available</p>
+              </div>
+            </div>
+          )}
         </div>
         <div>
           <div className="flex-1 md:flex-[0.3]"></div>
@@ -227,6 +245,7 @@ const ProductCard = () => {
           children={
             <SeeReviews
               ref={modalRef}
+              reviewType="food"
               onClose={handleCloseModal}
               food_id={id}
             />

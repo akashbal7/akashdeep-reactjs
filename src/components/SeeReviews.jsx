@@ -1,16 +1,18 @@
 import React, { useState, forwardRef, useEffect } from "react";
 import Review from "./Review";
 import { assets } from "../assets/assets";
-import Button from "./SmallComponents/Button/Button";
 import { useParams } from "react-router-dom";
+import { useAuth } from "./AuthProvider";
 
 // Review card component
-const SeeReviews = forwardRef(({ onClose }, modalRef) => {
+const SeeReviews = forwardRef(({ onClose, reviewType, food_id }, ref) => {
+  const { loggedInUser } = useAuth();
   const { id } = useParams();
   const [reviews, setReviews] = useState([]);
   const closeModal = () => {
     onClose();
   };
+  console.log("review type", reviewType);
   const reviewList = [
     {
       id: 1,
@@ -25,11 +27,14 @@ const SeeReviews = forwardRef(({ onClose }, modalRef) => {
   ];
 
   useEffect(() => {
+    const apiUrl =
+      reviewType === "food"
+        ? `http://localhost:5000/food/${food_id}/reviews`
+        : `http://localhost:5000/restaurant/${loggedInUser.restaurant_id}/reviews`;
+
     const fetchReviews = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:5000/food/${id}/reviews`
-        );
+        const response = await fetch(apiUrl);
         const data = await response.json();
         if (data.data) {
           setReviews(data.data); // Set the fetched reviews to state
@@ -47,7 +52,7 @@ const SeeReviews = forwardRef(({ onClose }, modalRef) => {
   return (
     <div
       className="bg-white shadow-md border bottom-slate-100  p-4 h-96 overflow-auto  "
-      ref={modalRef}
+      ref={ref}
     >
       <img
         className="cursor-pointer absolute right-10"

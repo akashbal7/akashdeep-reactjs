@@ -64,7 +64,11 @@ const FoodItemTable = ({ loggedInUser }) => {
             <td className="whitespace-nowrap overflow-hidden text-ellipsis max-w-[130px] pr-2">
               {item.description}
             </td>
-            <td>{item.category}</td>
+            <td>
+              {item.categories && item.categories.length > 0
+                ? item.categories.map((category) => category.name).join(", ")
+                : "No category"}
+            </td>
             <td>{item.in_stock ? "Yes" : "No"}</td>
             <td>${item.price.toFixed(2)}</td>
             <td className="flex gap-2 mt-4">

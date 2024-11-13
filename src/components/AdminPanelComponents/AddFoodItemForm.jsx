@@ -1,21 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "../SmallComponents/Button/Button";
 import ToggleButton from "../SmallComponents/ToggleButton";
 import UploadFile from "../SmallComponents/UploadFile";
 import NutritionFactsForm from "./AddNutritionFactForm";
 import { useAuth } from "../AuthProvider";
-import FoodItemTable from "./FoodItemTable";
+import MultiSelector from "../SmallComponents/MultiSelector";
 
 const AddFoodItemForm = ({ onFoodItemAdded, children }) => {
   const { loggedInUser } = useAuth();
   const [imageFile, setImageFile] = useState(null);
   const [isToggleEnabled, setIsToggleEnabled] = useState(false);
   const [isNutFactToggleEnabled, setIsNutFactToggleEnabled] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [foodItem, setFoodItem] = useState({
     name: "",
     description: "",
     price: "",
-    category: "",
+    categories: [],
     in_stock: false,
     has_nutrition_fact: false,
     nutrition_fact: {},
@@ -50,18 +52,41 @@ const AddFoodItemForm = ({ onFoodItemAdded, children }) => {
     });
   };
 
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = () => {
+    fetch(
+      `http://localhost:5000/restaurant/${loggedInUser.restaurant_id}/categories`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data && data.data) {
+          setCategories(data.data);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching categories", error);
+      });
+  };
+
   const handleAddFoodItem = (e) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("name", foodItem.name);
     formData.append("description", foodItem.description);
     formData.append("price", foodItem.price);
-    formData.append("category", foodItem.category);
+    formData.append("categories", JSON.stringify(selectedCategories));
     formData.append("in_stock", foodItem.in_stock);
     formData.append("has_nutrition_fact", foodItem.has_nutrition_fact);
     formData.append("nutrition_fact", JSON.stringify(foodItem.nutrition_fact));
     if (imageFile) {
       formData.append("image", imageFile); // Append the image file
+    }
+    console.log("formdataaaaaaaaaaa", formData);
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ": " + pair[1]);
     }
     fetch(
       `http://localhost:5000/restaurant/${loggedInUser.restaurant_id}/food`,
@@ -78,7 +103,7 @@ const AddFoodItemForm = ({ onFoodItemAdded, children }) => {
       })
       .then((data) => {
         console.log("Food item added:", data);
-        onFoodItemAdded(); // Call onFoodItemAdded callback here
+        onFoodItemAdded();
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -136,14 +161,10 @@ const AddFoodItemForm = ({ onFoodItemAdded, children }) => {
             <label className="block text-sm font-medium text-gray-700">
               Category
             </label>
-            <input
-              type="text"
+            <MultiSelector
               required
-              value={foodItem.category}
-              onChange={handleChange}
-              name="category"
-              placeholder="Category here eg. Salad, Indian"
-              className="mt-1 p-2 w-full border rounded"
+              categories={categories}
+              onSelectionChange={setSelectedCategories}
             />
           </div>
 

@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import Button from "./SmallComponents/Button/Button";
 import { useAuth } from "./AuthProvider";
 
-const RatingForm = forwardRef(({ onClose, reviewType }, modalRef) => {
+const RatingForm = forwardRef(({ onClose, reviewType }, ref) => {
   const { loggedInUser } = useAuth();
   const { id } = useParams();
   // State to handle ratings and review text
@@ -117,7 +117,7 @@ const RatingForm = forwardRef(({ onClose, reviewType }, modalRef) => {
   };
 
   return (
-    <div className="p-6 w-96 bg-white rounded-2xl shadow-md" ref={modalRef}>
+    <div className="p-6 w-96 bg-white rounded-2xl shadow-md" ref={ref}>
       <h2 className="text-2xl font-bold mb-4">Rate Your Experience</h2>
 
       <form onSubmit={handleSubmit}>

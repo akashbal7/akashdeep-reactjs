@@ -24,7 +24,7 @@ const Review = ({ review }) => {
       {/* Star rating */}
       <div className="flex items-center mb-2">
         <Rating rating={review.rating} />
-        <p className="ml-2 text-gray-500 text-sm">{review.date}</p>
+        <p className="ml-2 text-gray-500 text-sm">{review.created_at}</p>
       </div>
 
       {/* Review text */}
