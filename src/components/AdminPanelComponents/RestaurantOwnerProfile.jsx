@@ -4,11 +4,13 @@ import { useNavigate } from "react-router-dom";
 import Address from "./Address";
 import { useAuth } from "../AuthProvider";
 import ToastNotification from "../ToastNotification";
+import UploadFile from "../SmallComponents/UploadFile";
 
 const RestaurantOwnerProfile = ({ loggedInUser }) => {
   const [isMessagePopUpModalOpen, setIsMessagePopUpModalOpen] = useState(false);
   const [apiMessage, setApiMessage] = useState("");
   const [isApiSuccess, setIsApiSuccess] = useState(true);
+  const [imageFile, setImageFile] = useState(null);
   const [user, setUser] = useState({
     first_name: "",
     last_name: "",
@@ -35,6 +37,10 @@ const RestaurantOwnerProfile = ({ loggedInUser }) => {
 
   const [address, setAddress] = useState({});
   const navigate = useNavigate();
+
+  const handleFileChange = (e) => {
+    setImageFile(e.target.files[0]); // Store the selected image file
+  };
 
   const fetchUserData = () => {
     fetch(`http://localhost:5000/user/${loggedInUser.id}`)
@@ -89,20 +95,26 @@ const RestaurantOwnerProfile = ({ loggedInUser }) => {
 
   const handleSaveChanges = (e) => {
     e.preventDefault();
+
+    const formData = new FormData();
+
+    // Append restaurant fields to FormData
+    formData.append("first_name", user.first_name);
+    formData.append("last_name", user.last_name);
+    formData.append("restaurant_name", user.restaurant.name);
+    formData.append("about", user.restaurant.about);
+    formData.append("phone_number", user.restaurant.phone_number);
+    formData.append("website", user.restaurant.website);
+    formData.append("sitting_capacity", user.restaurant.sitting_capacity);
+
+    // Append the image if it's available
+    if (imageFile) {
+      formData.append("image", imageFile); // Send image file directly
+    }
+
     fetch(`http://localhost:5000/restaurant/${loggedInUser.restaurant_id}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        first_name: user.first_name,
-        last_name: user.last_name,
-        about: user.restaurant.about,
-        phone_number: user.restaurant.phone_number,
-        restaurant_name: user.restaurant.name,
-        sitting_capacity: user.restaurant.sitting_capacity,
-        website: user.restaurant.website,
-      }),
+      body: formData,
     })
       .then((response) => {
         if (!response.ok) {
@@ -228,6 +240,12 @@ const RestaurantOwnerProfile = ({ loggedInUser }) => {
               value={user.restaurant.sitting_capacity}
               onChange={handleChange}
               className="mt-1 p-2 w-full border rounded"
+            />
+          </div>
+          <div>
+            <UploadFile
+              onChange={handleFileChange}
+              children="Upload Restaurant Photo"
             />
           </div>
         </div>

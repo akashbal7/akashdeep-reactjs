@@ -1,27 +1,25 @@
-import React, { useContext, useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import ImageComponent from "../SmallComponents/ImageComponent/ImageComponent";
 import Button from "../SmallComponents/Button/Button";
-import { StoreContext } from "../../context/StoreContext";
 import Rating from "../SmallComponents/Rating";
 import { FaPhone, FaLaptop, FaLocationArrow, FaUtensils } from "react-icons/fa";
 import EmbeddedMap from "../SmallComponents/EmbeddedMap/EmbeddedMap";
 import { useParams } from "react-router-dom";
 import RatingForm from "../RatingForm";
 import CenterModal from "../SmallComponents/CenterModal";
-import Reviews from "../Review";
 import SeeReviews from "../SeeReviews";
+import { useAuth } from "../AuthProvider";
 
 const RestaurantPage = () => {
+  const { loggedInUser } = useAuth();
+  const [restaurant, setRestaurant] = useState(null);
   const { id } = useParams();
-  const { restaurantList } = useContext(StoreContext);
-  const res = restaurantList.find((res) => res._id === id);
   const [isGiveReviewModalOpen, setIsGiveReviewModalOpen] = useState(false); // Modal visibility state
   const [isSeeReviewModalOpen, setIsSeeReviewModalOpen] = useState(false);
   const modalRef = useRef(null);
 
   // Function to close the modal when clicking outside
   const handleClickOutside = (event) => {
-    console.log("clickeddddddddddddddd handleClickOutside");
     if (modalRef.current && !modalRef.current.contains(event.target)) {
       setIsGiveReviewModalOpen(false);
       setIsSeeReviewModalOpen(false);
@@ -30,19 +28,35 @@ const RestaurantPage = () => {
 
   const handleOpenGiveReviewModal = () => {
     setIsGiveReviewModalOpen(true);
-    console.log("clickeddddddddddddddd");
   };
 
   const handleOpenSeeReviewModal = () => {
     setIsSeeReviewModalOpen(true);
-    console.log("clickeddddddddddddddd");
   };
 
   const handleCloseModal = () => {
     setIsGiveReviewModalOpen(false);
     setIsSeeReviewModalOpen(false);
   };
-  console.log(res.address);
+
+  useEffect(() => {
+    const fetchRestaurantData = async () => {
+      console.log("Fetching restaurant data...");
+      try {
+        const response = await fetch(`http://localhost:5000/restaurant/${id}`);
+        const result = await response.json();
+        if (response.ok) {
+          setRestaurant(result.data);
+        } else {
+          console.error(result.message);
+        }
+      } catch (error) {
+        console.error("Failed to fetch restaurant data:", error);
+      }
+    };
+
+    fetchRestaurantData();
+  }, [id]);
 
   useEffect(() => {
     if (isGiveReviewModalOpen || isSeeReviewModalOpen) {
@@ -63,30 +77,38 @@ const RestaurantPage = () => {
     <div className="container mx-auto">
       <div className="flex justify-between items-start p-4 border-b border-gray-300">
         <div>
-          <h1 className="text-2xl font-bold">{res.name}</h1>
+          <h1 className="text-2xl font-bold">{restaurant?.name}</h1>
           <div className="text-sm text-gray-500 flex items-center">
             <span className="mr-2">
-              <Rating rating={4} />
+              <Rating rating={restaurant?.average_rating || 0} />
             </span>{" "}
-            955 reviews
+            {restaurant?.total_reviews} reviews
             <p className="border-l pl-1 ml-2 text-sm text-gray-500">
-              {res.cuisine}
+              {restaurant?.categories && restaurant.categories?.length > 0
+                ? restaurant?.categories
+                    .map((category) => category.name)
+                    .join(", ")
+                : "No cuisine"}
             </p>
           </div>
 
           <div className="flex items-center text-sm text-gray-500 mt-2">
             <div className="mr-2 flex">
               <FaLocationArrow className="mr-2 mt-0.5" />
-              <span>{res.address.fullAddress}</span>
+              <span>
+                {restaurant?.address?.address_line_1 +
+                  ", " +
+                  restaurant?.address?.city || "Address not available"}
+              </span>
             </div>
 
             <div className="mr-2 flex border-l pl-1 ">
               <FaPhone className="mr-2 mt-0.5" />
-              <span>{res.phone}</span>
+              <span>{restaurant?.phone_number}</span>
             </div>
             <div className="mr-4 flex border-l pl-1 ">
               <FaLaptop className="mr-2 mt-0.5" />
-              <a href={res.website} className="text-blue-600">
+              <a href={restaurant?.website} className="text-blue-600">
                 Website
               </a>
             </div>
@@ -102,16 +124,22 @@ const RestaurantPage = () => {
             <h2 className="text-lg font-semibold">Details</h2>
             <div className="mt-2 text-sm text-gray-700">
               <h3 className="font-bold">About</h3>
-              <p>{res.description}</p>
+              <p>{restaurant?.about}</p>
 
               <h3 className="font-bold mt-4">Opening Hours</h3>
-              <p>Days {res.openingHours.days}</p>
-              <p>Hours {res.openingHours.hours}</p>
+              <p>Days 7</p>
+              <p>Hours 8</p>
               <h3 className="font-bold mt-4">Cuisines</h3>
-              <p>{res.cuisine}</p>
+              <p>
+                {restaurant?.categories && restaurant?.categories?.length > 0
+                  ? restaurant.categories
+                      .map((category) => category.name)
+                      .join(", ")
+                  : "No cuisine"}
+              </p>
 
               <h3 className="font-bold mt-4">Sitting Capacity</h3>
-              <p>{res.capacity}</p>
+              <p>{restaurant?.sitting_capacity}</p>
 
               <button
                 type="button"
@@ -132,25 +160,26 @@ const RestaurantPage = () => {
             <h2 className="text-lg font-semibold">Rating and Reviews</h2>
 
             <div className="flex justify-start">
-              <Rating rating={3} />
-              <span className="ml-2"> 1452 reviews</span>
+              <Rating rating={restaurant?.average_rating || 0} />
+              <span className="ml-2"> {restaurant?.total_reviews} reviews</span>
             </div>
             <div className="mt-2">
               <div className="flex justify-between">
                 <span>Food</span>
-                <Rating rating={3} />
+                <Rating rating={restaurant?.food_rating} />
               </div>
               <div className="flex justify-between">
                 <span>Service</span>
-                <Rating rating={3} />
+                <Rating rating={restaurant?.service_rating} />
               </div>
               <div className="flex justify-between">
                 <span>Value</span>
-                <Rating rating={3} />
+                <Rating rating={restaurant?.value_rating} />
               </div>
+
               <div className="flex justify-between">
-                <span>Atmosphere</span>
-                <Rating rating={3} />
+                <span>Experience</span>
+                <Rating rating={restaurant?.experience_rating} />
               </div>
             </div>
             <div className="flex justify-between mt-4">
@@ -175,16 +204,20 @@ const RestaurantPage = () => {
             <div className="text-sm text-gray-700 mt-2">
               <div className="mr-2 flex">
                 <FaLocationArrow className="mr-2 mt-0.5" />
-                <span>{res.address.fullAddress}</span>
+                <span>
+                  {restaurant?.address?.address_line_1 +
+                    ", " +
+                    restaurant?.address?.city || "Address not available"}
+                </span>
               </div>
               <div className="flex">
                 <div className="mr-2 flex">
                   <FaPhone className="mr-2 mt-0.5" />
-                  <span>{res.phone}</span>
+                  <span>{restaurant?.phone_number}</span>
                 </div>
                 <div className="mr-4 flex">
                   <FaLaptop className="mr-2 mt-0.5" />
-                  <a href={res.website} className="text-blue-600">
+                  <a href={restaurant?.website} className="text-blue-600">
                     Website
                   </a>
                 </div>

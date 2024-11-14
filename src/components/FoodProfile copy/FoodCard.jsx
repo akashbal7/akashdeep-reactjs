@@ -96,8 +96,8 @@ const ProductCard = () => {
               <div>
                 <h1 className="text-3xl font-bold">{product.name}</h1>
                 <div className="text-sm flex text-gray-500">
-                  <Rating rating={4} />
-                  <span className="ml-2">955 reviews</span>
+                  <Rating rating={product.average_rating} />
+                  <span className="ml-2">{product.total_reviews} reviews</span>
                 </div>
                 <p className="text-gray-500">
                   {product.categories && product.categories.length > 0
@@ -199,25 +199,25 @@ const ProductCard = () => {
           <h2 className="text-lg font-semibold">Rating and Reviews</h2>
 
           <div className="flex justify-start">
-            <Rating rating={3} />
-            <span className="ml-2"> 1452 reviews</span>
+            <Rating rating={product.average_rating} />
+            <span className="ml-2"> {product.total_reviews} reviews</span>
           </div>
           <div className="mt-2">
             <div className="flex justify-between">
               <span>Taste</span>
-              <Rating rating={3} />
+              <Rating rating={product.taste_rating} />
             </div>
             <div className="flex justify-between">
               <span>Texture</span>
-              <Rating rating={3} />
+              <Rating rating={product.texture_rating} />
             </div>
             <div className="flex justify-between">
               <span>Quality of Ingredients</span>
-              <Rating rating={3} />
+              <Rating rating={product.quality_rating} />
             </div>
             <div className="flex justify-between">
               <span>Presentation</span>
-              <Rating rating={3} />
+              <Rating rating={product.presentation_rating} />
             </div>
           </div>
           <div className="flex justify-between mt-4">

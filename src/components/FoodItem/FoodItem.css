@@ -35,23 +35,6 @@
   box-shadow: 0px 0px 4px #00000020;
 }
 
-.food-item-counter {
-  position: absolute;
-  bottom: 15px;
-  right: 15px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px;
-  border-radius: 50px;
-  background-color: #fff;
-}
-
-.food-item-counter img {
-  width: 30px;
-  cursor: pointer;
-}
-
 .food-item-info {
   padding: 20px;
 }
@@ -60,8 +43,7 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 10px;
-  height: 60px;
+  height: 40px;
 }
 
 .food-item-name-rating p {
@@ -78,12 +60,10 @@
   color: var(--gray);
   font-size: 14px;
   text-align: justify;
-  margin-top: 10px;
 }
 
 .food-item-price {
   color: var(--primary);
   font-size: 22px;
   font-weight: 500;
-  margin-top: 10px;
 }

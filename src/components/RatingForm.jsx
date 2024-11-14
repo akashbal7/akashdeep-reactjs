@@ -3,29 +3,54 @@ import { FaStar } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import Button from "./SmallComponents/Button/Button";
 import { useAuth } from "./AuthProvider";
+import Rating from "./SmallComponents/Rating";
 
 const RatingForm = forwardRef(({ onClose, reviewType }, ref) => {
   const { loggedInUser } = useAuth();
+  const [overallAvgRating, setOverallAvgRating] = useState(0);
   const { id } = useParams();
   // State to handle ratings and review text
   const [ratings, setRatings] = useState({
-    overall: 0,
     taste: 0,
     texture: 0,
     quality: 0,
     presentation: 0,
   });
 
+  const [resRatings, setResRatings] = useState({
+    experience: 0,
+    quality: 0,
+    service: 0,
+    food: 0,
+  });
+
   const [reviewText, setReviewText] = useState(""); // Add this to track the text area input
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-  // Handle changes to ratings
-  const handleRating = (category, value) => {
-    setRatings((prev) => ({
-      ...prev,
-      [category]: value,
-    }));
+  const calculateOverallRating = (ratings) => {
+    const ratingValues = Object.values(ratings);
+    console.log("ratingValues", ratingValues);
+    const total = ratingValues.reduce((acc, rating) => acc + rating, 0);
+    return total > 0 ? total / ratingValues.length : 0;
   };
+
+  // Update the rating and overall average
+  const handleRating = (category, value) => {
+    const newRatings =
+      reviewType === "food" ? { ...ratings } : { ...resRatings };
+    newRatings[category] = value;
+
+    if (reviewType === "food") {
+      setRatings(newRatings);
+      setOverallAvgRating(calculateOverallRating(newRatings));
+      console.log("newRatings", newRatings);
+    } else {
+      setResRatings(newRatings);
+      setOverallAvgRating(calculateOverallRating(newRatings));
+      console.log("newRatings", newRatings);
+    }
+  };
+  console.log("calculateOverallRating", overallAvgRating);
 
   // Render the star rating based on the category and rating
   const renderStars = (category, rating) => {
@@ -48,7 +73,7 @@ const RatingForm = forwardRef(({ onClose, reviewType }, ref) => {
     const formData =
       reviewType === "food"
         ? {
-            rating: ratings.overall,
+            rating: Math.round(overallAvgRating),
             customer_id: loggedInUser.id,
             taste_rating: ratings.taste,
             texture_rating: ratings.texture,
@@ -57,7 +82,11 @@ const RatingForm = forwardRef(({ onClose, reviewType }, ref) => {
             review_text: reviewText,
           }
         : {
-            rating: ratings.overall,
+            rating: Math.round(overallAvgRating),
+            food_rating: resRatings.food,
+            service_rating: resRatings.service,
+            value_rating: resRatings.quality,
+            experience_rating: resRatings.experience,
             customer_id: loggedInUser.id,
             review_text: reviewText,
           };
@@ -121,11 +150,10 @@ const RatingForm = forwardRef(({ onClose, reviewType }, ref) => {
       <h2 className="text-2xl font-bold mb-4">Rate Your Experience</h2>
 
       <form onSubmit={handleSubmit}>
-        {/* Overall Rating */}
         <div className="flex justify-center mb-4">
-          {renderStars("overall", ratings.overall)}
+          <Rating className="text-2xl" rating={Math.round(overallAvgRating)} />
         </div>
-        {reviewType === "food" && (
+        {reviewType === "food" ? (
           <div>
             <div className="mb-4 flex justify-between">
               <label className="block text-mg font-semibold">Taste</label>
@@ -151,6 +179,33 @@ const RatingForm = forwardRef(({ onClose, reviewType }, ref) => {
               </label>
               <div className="flex">
                 {renderStars("presentation", ratings.presentation)}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <div className="mb-4 flex justify-between">
+              <label className="block text-lg font-semibold">Food</label>
+              <div className="flex">{renderStars("food", resRatings.food)}</div>
+            </div>
+
+            <div className="mb-4 flex justify-between">
+              <label className="block text-lg font-semibold">Service</label>
+              <div className="flex">
+                {renderStars("service", resRatings.service)}
+              </div>
+            </div>
+
+            <div className="mb-4 flex justify-between">
+              <label className="block text-lg font-semibold">Value</label>
+              <div className="flex">
+                {renderStars("quality", resRatings.quality)}
+              </div>
+            </div>
+            <div className="mb-4 flex justify-between">
+              <label className="block text-lg font-semibold">Experience</label>
+              <div className="flex">
+                {renderStars("experience", resRatings.experience)}
               </div>
             </div>
           </div>
