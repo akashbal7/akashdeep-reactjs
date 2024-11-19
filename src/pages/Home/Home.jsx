@@ -3,18 +3,17 @@ import "./Home.css";
 import Header from "../../components/Header/Header";
 import ExploreMenu from "../../components/ExploreMenu/ExploreMenu";
 import FoodDisplay from "../../components/FoodDisplay/FoodDisplay";
-import AppDownload from "../../components/AppDownload.jsx/AppDownload";
 import RestaurantList from "../../components/RestaurantList/RestaurantList";
-import FoodProfile from "../../components/FoodProfile/FoodProfile";
 
 const Home = () => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [category, setCategory] = useState("All");
   const [restaurants, setRestaurants] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch("http://localhost:5000/restaurants");
+        const response = await fetch(`${API_BASE_URL}/restaurants`);
         if (!response.ok) {
           throw new Error("Failed to fetch restaurants");
         }

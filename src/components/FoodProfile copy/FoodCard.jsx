@@ -18,6 +18,7 @@ const ProductCard = () => {
   const { food_list, cartItems, addToCart, removeFromCart } =
     useContext(StoreContext);
   const [product, setProduct] = useState(null);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [nutrition, setNutritionFact] = useState(null);
   const [isGiveReviewModalOpen, setIsGiveReviewModalOpen] = useState(false); // Modal visibility state
   const [isSeeReviewModalOpen, setIsSeeReviewModalOpen] = useState(false);
@@ -27,9 +28,7 @@ const ProductCard = () => {
     // Fetch product details from API
     const fetchProduct = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:5000/restaurant/3/food/${id}`
-        );
+        const response = await fetch(`${API_BASE_URL}/restaurant/3/food/${id}`);
         const data = await response.json();
         setProduct(data); // Set the fetched data to product state
         if (data.has_nutrition_fact) {

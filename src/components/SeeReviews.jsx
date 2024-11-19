@@ -6,6 +6,7 @@ import { useAuth } from "./AuthProvider";
 
 // Review card component
 const SeeReviews = forwardRef(({ onClose, reviewType, food_id }, ref) => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const { loggedInUser } = useAuth();
   const { id } = useParams();
   const [reviews, setReviews] = useState([]);
@@ -29,8 +30,8 @@ const SeeReviews = forwardRef(({ onClose, reviewType, food_id }, ref) => {
   useEffect(() => {
     const apiUrl =
       reviewType === "food"
-        ? `http://localhost:5000/food/${food_id}/reviews`
-        : `http://localhost:5000/restaurant/${loggedInUser.restaurant_id}/reviews`;
+        ? `${API_BASE_URL}/food/${food_id}/reviews`
+        : `${API_BASE_URL}/restaurant/${loggedInUser.restaurant_id}/reviews`;
 
     const fetchReviews = async () => {
       try {

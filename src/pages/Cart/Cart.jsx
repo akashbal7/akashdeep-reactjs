@@ -9,6 +9,7 @@ import { FaCircleMinus, FaCirclePlus, FaCircleXmark } from "react-icons/fa6";
 import Tooltip from "../../components/AdminPanelComponents/Tooltip";
 
 const Cart = () => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const { loggedInUser } = useAuth();
   const [cartData, setCartData] = useState([]);
   const [subtotal, setSubtotal] = useState(0);
@@ -19,7 +20,7 @@ const Cart = () => {
     const fetchCartData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/user/${loggedInUser.id}/cart`
+          `${API_BASE_URL}/user/${loggedInUser.id}/cart`
         );
         if (response.ok) {
           const result = await response.json();
@@ -48,7 +49,7 @@ const Cart = () => {
   const updateQuantity = async (itemId, foodItemId, newQuantity) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/user/${loggedInUser.id}/cart/${itemId}`,
+        `${API_BASE_URL}/user/${loggedInUser.id}/cart/${itemId}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -77,7 +78,7 @@ const Cart = () => {
   const deleteCartItem = async (itemId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/user/${loggedInUser.id}/cart/${itemId}`,
+        `${API_BASE_URL}/user/${loggedInUser.id}/cart/${itemId}`,
         {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },

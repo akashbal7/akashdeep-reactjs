@@ -6,6 +6,7 @@ import { useAuth } from "../AuthProvider";
 
 const Login = ({ setShowLogin, setShowRegister }) => {
   const [email, setEmail] = useState("");
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -21,7 +22,7 @@ const Login = ({ setShowLogin, setShowRegister }) => {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/login", {
+      const response = await fetch(`${API_BASE_URL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

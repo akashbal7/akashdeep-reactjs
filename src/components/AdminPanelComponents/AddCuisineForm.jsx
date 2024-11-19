@@ -4,14 +4,13 @@ import { useAuth } from "../AuthProvider";
 import ToastNotification from "../ToastNotification";
 
 const AddCuisineForm = ({ onFoodItemAdded, children }) => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const { loggedInUser } = useAuth();
   const [isMessagePopUpModalOpen, setIsMessagePopUpModalOpen] = useState(false);
   const [apiMessage, setApiMessage] = useState("");
   const [isApiSuccess, setIsApiSuccess] = useState(true);
-  const [error, setError] = useState(""); // State for error message
   const [name, setName] = useState(""); // State to manage name input
   const [description, setDescription] = useState(""); // State to manage description input
-  const [isSubmitting, setIsSubmitting] = useState(false); // State for submit loading
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,32 +23,23 @@ const AddCuisineForm = ({ onFoodItemAdded, children }) => {
 
   const handleAddCategory = async (e) => {
     e.preventDefault();
-
-    // Set loading state
-    setIsSubmitting(true);
-    setError(""); // Reset error on new submission
-
     const categoryData = {
       name: name,
       description: description,
     };
-
-    console.log("Submitting category data:", categoryData, loggedInUser);
-
-    fetch(
-      `http://localhost:5000/restaurant/${loggedInUser.restaurant_id}/category`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(categoryData),
-      }
-    )
+    fetch(`${API_BASE_URL}/restaurant/${loggedInUser.restaurant_id}/category`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(categoryData),
+    })
       .then((response) => {
         if (!response.ok) {
+          setIsApiSuccess(false);
+          setApiMessage("Unable to add Food category");
           setIsMessagePopUpModalOpen(true);
-          setTimeout(() => setIsMessagePopUpModalOpen(false), 8000);
+          setTimeout(() => setIsMessagePopUpModalOpen(false), 5000);
           throw new Error("Failed to add category");
         }
         return response.json(); // Parse response data
@@ -57,9 +47,7 @@ const AddCuisineForm = ({ onFoodItemAdded, children }) => {
       .then((data) => {
         setApiMessage(data.message);
         setIsMessagePopUpModalOpen(true);
-        setTimeout(() => setIsMessagePopUpModalOpen(false), 8000);
-
-        // Clear form fields after a successful submission
+        setTimeout(() => setIsMessagePopUpModalOpen(false), 5000);
         setName("");
         setDescription("");
         onFoodItemAdded();
@@ -68,10 +56,8 @@ const AddCuisineForm = ({ onFoodItemAdded, children }) => {
         console.error("Error adding category:", error);
         setApiMessage(error.message || "An error occurred");
         setIsMessagePopUpModalOpen(true);
-        setTimeout(() => setIsMessagePopUpModalOpen(false), 8000);
-      })
-      .finally(() => {
-        setIsSubmitting(false); // Reset loading state
+        setIsApiSuccess(false);
+        setTimeout(() => setIsMessagePopUpModalOpen(false), 5000);
       });
   };
 

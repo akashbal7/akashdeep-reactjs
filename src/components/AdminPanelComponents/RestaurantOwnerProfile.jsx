@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import Button from "../SmallComponents/Button/Button";
 import { useNavigate } from "react-router-dom";
 import Address from "./Address";
-import { useAuth } from "../AuthProvider";
 import ToastNotification from "../ToastNotification";
 import UploadFile from "../SmallComponents/UploadFile";
 
 const RestaurantOwnerProfile = ({ loggedInUser }) => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [isMessagePopUpModalOpen, setIsMessagePopUpModalOpen] = useState(false);
   const [apiMessage, setApiMessage] = useState("");
   const [isApiSuccess, setIsApiSuccess] = useState(true);
@@ -43,7 +43,7 @@ const RestaurantOwnerProfile = ({ loggedInUser }) => {
   };
 
   const fetchUserData = () => {
-    fetch(`http://localhost:5000/user/${loggedInUser.id}`)
+    fetch(`${API_BASE_URL}/user/${loggedInUser.id}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to fetch user data");
@@ -112,7 +112,7 @@ const RestaurantOwnerProfile = ({ loggedInUser }) => {
       formData.append("image", imageFile); // Send image file directly
     }
 
-    fetch(`http://localhost:5000/restaurant/${loggedInUser.restaurant_id}`, {
+    fetch(`${API_BASE_URL}/restaurant/${loggedInUser.restaurant_id}`, {
       method: "PUT",
       body: formData,
     })
@@ -126,14 +126,13 @@ const RestaurantOwnerProfile = ({ loggedInUser }) => {
         fetchUserData();
         setIsMessagePopUpModalOpen(true);
         setApiMessage(data.message);
-
-        // Hide the modal after 3 seconds
         setTimeout(() => setIsMessagePopUpModalOpen(false), 5000); // Call the fetch function again to get the updated data
       })
       .catch((error) => {
         console.error("Error updating user:", error);
-        setApiMessage(data.message);
+        setApiMessage(error.error);
         setIsApiSuccess(false);
+        setIsMessagePopUpModalOpen(true);
         setTimeout(() => setIsMessagePopUpModalOpen(false), 5000);
       });
   };

@@ -5,13 +5,14 @@ import { useAuth } from "../AuthProvider";
 import Rating from "../SmallComponents/Rating";
 
 const ReviewTable = ({ reviewType }) => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [reviews, setReviews] = useState([]);
   const { loggedInUser } = useAuth();
   useEffect(() => {
     const apiUrl =
       reviewType === "food"
-        ? `http://localhost:5000/restaurant/${loggedInUser.restaurant_id}/food/reviews`
-        : `http://localhost:5000/restaurant/${loggedInUser.restaurant_id}/reviews`;
+        ? `${API_BASE_URL}/restaurant/${loggedInUser.restaurant_id}/food/reviews`
+        : `${API_BASE_URL}/restaurant/${loggedInUser.restaurant_id}/reviews`;
 
     const fetchReviews = async () => {
       try {

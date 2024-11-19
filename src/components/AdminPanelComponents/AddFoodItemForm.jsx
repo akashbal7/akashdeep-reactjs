@@ -5,9 +5,14 @@ import UploadFile from "../SmallComponents/UploadFile";
 import NutritionFactsForm from "./AddNutritionFactForm";
 import { useAuth } from "../AuthProvider";
 import MultiSelector from "../SmallComponents/MultiSelector";
+import ToastNotification from "../ToastNotification";
 
 const AddFoodItemForm = ({ onFoodItemAdded, children }) => {
   const { loggedInUser } = useAuth();
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const [isMessagePopUpModalOpen, setIsMessagePopUpModalOpen] = useState(false);
+  const [apiMessage, setApiMessage] = useState("");
+  const [isApiSuccess, setIsApiSuccess] = useState(true);
   const [imageFile, setImageFile] = useState(null);
   const [isToggleEnabled, setIsToggleEnabled] = useState(false);
   const [isNutFactToggleEnabled, setIsNutFactToggleEnabled] = useState(false);
@@ -57,9 +62,7 @@ const AddFoodItemForm = ({ onFoodItemAdded, children }) => {
   }, []);
 
   const fetchCategories = () => {
-    fetch(
-      `http://localhost:5000/restaurant/${loggedInUser.restaurant_id}/categories`
-    )
+    fetch(`${API_BASE_URL}/restaurant/${loggedInUser.restaurant_id}/categories`)
       .then((response) => response.json())
       .then((data) => {
         if (data && data.data) {
@@ -88,13 +91,10 @@ const AddFoodItemForm = ({ onFoodItemAdded, children }) => {
     for (let pair of formData.entries()) {
       console.log(pair[0] + ": " + pair[1]);
     }
-    fetch(
-      `http://localhost:5000/restaurant/${loggedInUser.restaurant_id}/food`,
-      {
-        method: "POST",
-        body: formData,
-      }
-    )
+    fetch(`${API_BASE_URL}/restaurant/${loggedInUser.restaurant_id}/food`, {
+      method: "POST",
+      body: formData,
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to add food item");
@@ -103,10 +103,17 @@ const AddFoodItemForm = ({ onFoodItemAdded, children }) => {
       })
       .then((data) => {
         console.log("Food item added:", data);
+        setApiMessage(data.message);
+        setIsMessagePopUpModalOpen(true);
+        setTimeout(() => setIsMessagePopUpModalOpen(false), 5000);
         onFoodItemAdded();
       })
       .catch((error) => {
         console.error("Error:", error);
+        setApiMessage(data.error || "Unable to add food item");
+        setIsApiSuccess(false);
+        setIsMessagePopUpModalOpen(true);
+        setTimeout(() => setIsMessagePopUpModalOpen(false), 5000);
       });
   };
 

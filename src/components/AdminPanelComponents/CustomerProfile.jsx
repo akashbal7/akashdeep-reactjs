@@ -3,10 +3,13 @@ import Button from "../SmallComponents/Button/Button";
 
 const CustomerProfile = ({ loggedInUser }) => {
   const [user, setUser] = useState({});
-  const [error, setError] = useState("");
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const [isMessagePopUpModalOpen, setIsMessagePopUpModalOpen] = useState(false);
+  const [apiMessage, setApiMessage] = useState("");
+  const [isApiSuccess, setIsApiSuccess] = useState(true);
 
   const fetchUserData = () => {
-    fetch(`http://localhost:5000/user/${loggedInUser.id}`)
+    fetch(`${API_BASE_URL}/user/${loggedInUser.id}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to fetch user data");
@@ -36,7 +39,7 @@ const CustomerProfile = ({ loggedInUser }) => {
 
   const handleSaveChanges = (e) => {
     e.preventDefault();
-    fetch(`http://localhost:5000/user/${loggedInUser.id}`, {
+    fetch(`${API_BASE_URL}/user/${loggedInUser.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -55,11 +58,17 @@ const CustomerProfile = ({ loggedInUser }) => {
       })
       .then((data) => {
         console.log("User updated successfully:", data);
-        fetchUserData(); // Call the fetch function again to get the updated data
+        setApiMessage(data.message);
+        setIsMessagePopUpModalOpen(true);
+        setTimeout(() => setIsMessagePopUpModalOpen(false), 5000);
+        fetchUserData();
       })
       .catch((error) => {
         console.error("Error updating user:", error);
-        setError("Failed to update user");
+        setApiMessage(data.error || "Unable to update details");
+        setIsApiSuccess(false);
+        setIsMessagePopUpModalOpen(true);
+        setTimeout(() => setIsMessagePopUpModalOpen(false), 5000);
       });
   };
 
@@ -137,6 +146,9 @@ const CustomerProfile = ({ loggedInUser }) => {
         </div>
         <Button type="submit" children="Save changes" />
       </form>
+      {isMessagePopUpModalOpen && (
+        <ToastNotification isSuccess={isApiSuccess} message={apiMessage} />
+      )}
     </div>
   );
 };

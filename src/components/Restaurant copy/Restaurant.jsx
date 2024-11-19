@@ -12,6 +12,7 @@ import { useAuth } from "../AuthProvider";
 
 const RestaurantPage = () => {
   const { loggedInUser } = useAuth();
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [restaurant, setRestaurant] = useState(null);
   const { id } = useParams();
   const [isGiveReviewModalOpen, setIsGiveReviewModalOpen] = useState(false); // Modal visibility state
@@ -43,7 +44,7 @@ const RestaurantPage = () => {
     const fetchRestaurantData = async () => {
       console.log("Fetching restaurant data...");
       try {
-        const response = await fetch(`http://localhost:5000/restaurant/${id}`);
+        const response = await fetch(`${API_BASE_URL}/restaurant/${id}`);
         const result = await response.json();
         if (response.ok) {
           setRestaurant(result.data);

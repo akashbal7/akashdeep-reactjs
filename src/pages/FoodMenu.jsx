@@ -7,6 +7,7 @@ import QuantitySelector from "../components/SmallComponents/QuantitySelector";
 
 const FoodMenu = () => {
   const [food_list, setFoodList] = useState([]);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [uniqueCategories, setUniqueCategories] = useState([]);
   const { cartItems, addToCart, removeFromCart } = useContext(StoreContext);
   const [showActiveSidebarTab, setShowActiveSidebarTab] = useState("Salad");
@@ -18,7 +19,7 @@ const FoodMenu = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch("http://localhost:5000/foods");
+        const response = await fetch(`${API_BASE_URL}/foods`);
         if (!response.ok) {
           throw new Error("Failed to fetch foods");
         }
@@ -35,7 +36,7 @@ const FoodMenu = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch("http://localhost:5000/categories");
+        const response = await fetch(`${API_BASE_URL}/categories`);
         if (!response.ok) {
           throw new Error("Failed to fetch categories");
         }

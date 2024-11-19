@@ -3,6 +3,7 @@ import "./FoodDisplay.css";
 import FoodItem from "../FoodItem/FoodItem";
 
 const FoodDisplay = ({ category }) => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [food_list, setFoodList] = useState([]);
   const displayedFoodItems =
     category === "All" ? food_list.slice(0, 6) : food_list;
@@ -10,7 +11,7 @@ const FoodDisplay = ({ category }) => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch("http://localhost:5000/foods");
+        const response = await fetch(`${API_BASE_URL}/foods`);
         if (!response.ok) {
           throw new Error("Failed to fetch foods");
         }

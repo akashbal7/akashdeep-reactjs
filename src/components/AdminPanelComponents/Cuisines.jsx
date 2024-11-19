@@ -3,15 +3,14 @@ import { FaEye, FaTrash, FaPen } from "react-icons/fa";
 import Tooltip from "./Tooltip";
 
 const Cuisines = ({ loggedInUser }) => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [categories, setCategories] = useState([]);
   useEffect(() => {
     fetchCategories();
   }, []);
 
   const fetchCategories = () => {
-    fetch(
-      `http://localhost:5000/restaurant/${loggedInUser.restaurant_id}/categories`
-    )
+    fetch(`${API_BASE_URL}/restaurant/${loggedInUser.restaurant_id}/categories`)
       .then((response) => response.json())
       .then((data) => {
         if (data && data.data) {

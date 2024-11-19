@@ -6,6 +6,7 @@ import ToastNotification from "../ToastNotification";
 
 const QuantitySelector = ({ foodItemId, colorCart = "text-black" }) => {
   const { loggedInUser } = useAuth();
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [isMessagePopUpModalOpen, setIsMessagePopUpModalOpen] = useState(false);
   const [apiMessage, setApiMessage] = useState("");
   const [isApiSuccess, setIsApiSuccess] = useState(true);
@@ -27,7 +28,7 @@ const QuantitySelector = ({ foodItemId, colorCart = "text-black" }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/user/${loggedInUser.id}/cart`,
+        `${API_BASE_URL}/user/${loggedInUser.id}/cart`,
         {
           method: "POST",
           headers: {

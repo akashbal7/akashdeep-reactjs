@@ -6,7 +6,7 @@ import ToggleButton from "../SmallComponents/ToggleButton";
 
 const Register = ({ setShowLogin, setShowRegister }) => {
   const [role, setRole] = useState("customer");
-
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   // Form states
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -45,7 +45,7 @@ const Register = ({ setShowLogin, setShowRegister }) => {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/register", {
+      const response = await fetch(`${API_BASE_URL}/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

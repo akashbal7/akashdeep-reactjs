@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Button from "../SmallComponents/Button/Button";
+import ToastNotification from "../ToastNotification";
 
 const Address = ({ addressObj, restaurantId, addressId }) => {
   if (!addressObj) {
     return <div>No address available.</div>; // Render a message when address is missing
   }
-
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const [isMessagePopUpModalOpen, setIsMessagePopUpModalOpen] = useState(false);
+  const [apiMessage, setApiMessage] = useState("");
+  const [isApiSuccess, setIsApiSuccess] = useState(true);
   const [address, setAddress] = useState({
     address_line_1: addressObj?.address_line_1 || "",
     address_line_2: addressObj?.address_line_2 || "",
@@ -56,27 +60,30 @@ const Address = ({ addressObj, restaurantId, addressId }) => {
     }
 
     // Send the PUT request to update the address
-    fetch(
-      `http://localhost:5000/restaurant/${restaurantId}/address/${addressId}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedAddress),
-      }
-    )
+    fetch(`${API_BASE_URL}/restaurant/${restaurantId}/address/${addressId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedAddress),
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to update address");
         }
         return response.json();
       })
-      // .then((data) => {
-      //   console.log("Address updated successfully:", data);
-      // })
+      .then((data) => {
+        setApiMessage(data.message);
+        setIsMessagePopUpModalOpen(true);
+        setTimeout(() => setIsMessagePopUpModalOpen(false), 5000);
+      })
       .catch((error) => {
-        console.error("Error updating address:", error);
+        console.error("Error:", error);
+        setApiMessage(data.error || "Unable to Update Address");
+        setIsApiSuccess(false);
+        setIsMessagePopUpModalOpen(true);
+        setTimeout(() => setIsMessagePopUpModalOpen(false), 5000);
       });
   };
 
@@ -166,6 +173,9 @@ const Address = ({ addressObj, restaurantId, addressId }) => {
         </div>
         <Button type="submit" children="Add Address" />
       </form>
+      {isMessagePopUpModalOpen && (
+        <ToastNotification isSuccess={isApiSuccess} message={apiMessage} />
+      )}
     </div>
   );
 };

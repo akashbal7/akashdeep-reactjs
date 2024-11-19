@@ -6,6 +6,7 @@ import { useAuth } from "./AuthProvider";
 import Rating from "./SmallComponents/Rating";
 
 const RatingForm = forwardRef(({ onClose, reviewType }, ref) => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const { loggedInUser } = useAuth();
   const [overallAvgRating, setOverallAvgRating] = useState(0);
   const { id } = useParams();
@@ -96,8 +97,8 @@ const RatingForm = forwardRef(({ onClose, reviewType }, ref) => {
 
     const apiUrl =
       reviewType === "food"
-        ? `http://localhost:5000/food/${id}/review`
-        : `http://localhost:5000/restaurant/${loggedInUser.restaurant_id}/review`;
+        ? `${API_BASE_URL}/food/${id}/review`
+        : `${API_BASE_URL}/restaurant/${loggedInUser.restaurant_id}/review`;
 
     try {
       // Make the POST request with fetch
