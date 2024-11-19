@@ -18,7 +18,7 @@ const FoodItem = ({ id, name, price, description, image }) => {
           className="food-item-img transition duration-300 ease-in-out hover:blur-sm"
         />
         <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100">
-          <QuantitySelector />
+          <QuantitySelector foodItemId={id} colorCart="text-white" />
         </div>
       </div>
       <div className="food-item-info p-4">

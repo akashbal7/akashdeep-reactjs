@@ -112,7 +112,7 @@ const FoodMenu = () => {
                   <p className="text-sm text-gray-500">{item.description}</p>
                 )}
                 <p className="text-gray-900 font-medium">${item.price}</p>
-                <QuantitySelector />
+                <QuantitySelector foodItemId={item.id} />
               </div>
             </div>
           ))}

@@ -128,13 +128,13 @@ const RestaurantOwnerProfile = ({ loggedInUser }) => {
         setApiMessage(data.message);
 
         // Hide the modal after 3 seconds
-        setTimeout(() => setIsMessagePopUpModalOpen(false), 3000); // Call the fetch function again to get the updated data
+        setTimeout(() => setIsMessagePopUpModalOpen(false), 5000); // Call the fetch function again to get the updated data
       })
       .catch((error) => {
         console.error("Error updating user:", error);
         setApiMessage(data.message);
         setIsApiSuccess(false);
-        setTimeout(() => setIsMessagePopUpModalOpen(false), 3000);
+        setTimeout(() => setIsMessagePopUpModalOpen(false), 5000);
       });
   };
   return (

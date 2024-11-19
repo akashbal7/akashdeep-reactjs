@@ -117,7 +117,7 @@ const ProductCard = () => {
                 </p>
               </div>
             </div>
-            <QuantitySelector />
+            <QuantitySelector foodItemId={product.id} />
           </div>
 
           {product.has_nutrition_fact ? (
