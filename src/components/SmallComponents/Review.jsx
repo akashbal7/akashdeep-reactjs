@@ -1,11 +1,9 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import "./Review.css";
-import { StoreContext } from "../../context/StoreContext";
-
 
 const Review = () => {
   const [rating, setRating] = useState(0);
-  const [opinion, setOpinion] = useState('');
+  const [opinion, setOpinion] = useState("");
 
   const handleStarClick = (index) => {
     setRating(index + 1);
@@ -13,13 +11,13 @@ const Review = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log('Rating:', rating, 'Opinion:', opinion);
+    console.log("Rating:", rating, "Opinion:", opinion);
     // Handle the submit logic here
   };
 
   const handleCancel = () => {
     setRating(0);
-    setOpinion('');
+    setOpinion("");
   };
 
   return (
@@ -31,9 +29,9 @@ const Review = () => {
           {[...Array(5)].map((_, i) => (
             <i
               key={i}
-              className={`bx ${i < rating ? 'bxs-star' : 'bx-star'} star`}
+              className={`bx ${i < rating ? "bxs-star" : "bx-star"} star`}
               onClick={() => handleStarClick(i)}
-              style={{ '--i': i }}
+              style={{ "--i": i }}
             />
           ))}
         </div>
@@ -59,4 +57,3 @@ const Review = () => {
 };
 
 export default Review;
-

@@ -118,7 +118,9 @@ const RestaurantPage = () => {
       </div>
       <div className="flex mt-4 xl:h-96">
         <div className="overflow-hidden rounded-2xl shadow-slate-300 shadow-lg w-full h-full md:w-1/2">
-          <ImageComponent className="" />
+          <ImageComponent
+            src={`data:image/png;base64,${restaurant?.image_data}`}
+          />
         </div>
         <div className="w-full h-full md:w-1/2 ml-10 ">
           <div className="p-4 shadow-slate-300 shadow-lg rounded-2xl h-full">

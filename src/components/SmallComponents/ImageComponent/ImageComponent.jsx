@@ -1,9 +1,9 @@
 import React from "react";
 
-const ImageComponent = ({ className }) => {
+const ImageComponent = ({ className, src }) => {
   return (
     <img
-      src="https://images.pexels.com/photos/262978/pexels-photo-262978.jpeg"
+      src={src}
       alt="Restaurant"
       className={`w-full h-full rounded-2xl ${className}`}
     />

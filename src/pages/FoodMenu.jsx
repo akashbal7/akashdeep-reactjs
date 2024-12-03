@@ -1,7 +1,4 @@
-import React, { useState, useContext, useEffect, useMemo } from "react";
-import { StoreContext } from "../context/StoreContext";
-import { assets } from "../assets/assets";
-import FoodItemCounter from "../components/FoodItemCounter";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import QuantitySelector from "../components/SmallComponents/QuantitySelector";
 
@@ -9,7 +6,6 @@ const FoodMenu = () => {
   const [food_list, setFoodList] = useState([]);
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [uniqueCategories, setUniqueCategories] = useState([]);
-  const { cartItems, addToCart, removeFromCart } = useContext(StoreContext);
   const [showActiveSidebarTab, setShowActiveSidebarTab] = useState("Salad");
   const defaultClassWithTextBlack =
     "flex items-center gap-2 border-b pl-6 py-2 cursor-pointer";

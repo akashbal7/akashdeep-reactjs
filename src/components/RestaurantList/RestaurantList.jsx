@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import "./RestaurantList.css";
-import { StoreContext } from "../../context/StoreContext";
 import Restaurant from "../Restaurant/Restaurant";
 
 const RestaurantList = () => {

@@ -1,7 +1,5 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./FoodCard.css";
-import { assets } from "../../assets/assets";
-import { StoreContext } from "../../context/StoreContext";
 import { useParams } from "react-router-dom";
 import Button from "../SmallComponents/Button/Button";
 import Rating from "../SmallComponents/Rating";
@@ -9,14 +7,11 @@ import ImageComponent from "../SmallComponents/ImageComponent/ImageComponent";
 import SeeReviews from "../SeeReviews";
 import CenterModal from "../SmallComponents/CenterModal";
 import RatingForm from "../RatingForm";
-import FoodItemCounter from "../FoodItemCounter";
 import QuantitySelector from "../SmallComponents/QuantitySelector";
 import Spinner from "../SmallComponents/Spinner";
 
 const ProductCard = () => {
   const { id } = useParams();
-  const { food_list, cartItems, addToCart, removeFromCart } =
-    useContext(StoreContext);
   const [product, setProduct] = useState(null);
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [nutrition, setNutritionFact] = useState(null);
@@ -86,7 +81,9 @@ const ProductCard = () => {
     <div className="bg-white p-4 rounded-lg shadow-lg max-w-6xl mx-auto">
       <div className="flex mb-4 flex-col md:flex-row">
         <div className="flex-1 flex-[0.6] rounded-2xl overflow-hidden w-full h-full md:w-1/2 shadow-slate-300 shadow-lg">
-          <ImageComponent />
+          <ImageComponent
+            src={`data:image/png;base64,${product?.image_data}`}
+          />
         </div>
 
         <div className="flex-1 md:flex-[0.4] md:w-1/2 ml-4 flex flex-col justify-between">

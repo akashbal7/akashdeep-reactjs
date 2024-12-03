@@ -1,14 +1,11 @@
 import React, { useContext } from "react";
 import "./FoodItem.css";
-import { StoreContext } from "../../context/StoreContext";
 import { Link } from "react-router-dom";
 import Button from "../SmallComponents/Button/Button";
 import Rating from "../SmallComponents/Rating";
 import QuantitySelector from "../SmallComponents/QuantitySelector";
 
 const FoodItem = ({ id, name, price, description, image }) => {
-  const { cartItems, addToCart, removeFromCart } = useContext(StoreContext);
-
   return (
     <div className="food-item shadow-slate-300 shadow-lg relative">
       <div className="food-item-img-container relative">

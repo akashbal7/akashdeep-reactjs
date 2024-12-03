@@ -1,8 +1,6 @@
 import React, { useContext } from "react";
 import "./Restaurant.css";
-import { assets } from "../../assets/assets";
-import { StoreContext } from "../../context/StoreContext";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Button from "../SmallComponents/Button/Button";
 import Rating from "../SmallComponents/Rating";
 
