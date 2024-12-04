@@ -17,7 +17,7 @@ const RestaurantPage = () => {
   const { id } = useParams();
   const [isGiveReviewModalOpen, setIsGiveReviewModalOpen] = useState(false); // Modal visibility state
   const [isSeeReviewModalOpen, setIsSeeReviewModalOpen] = useState(false);
-  const modalRef = useRef(null);
+  const modalRef = useRef();
 
   // Function to close the modal when clicking outside
   const handleClickOutside = (event) => {

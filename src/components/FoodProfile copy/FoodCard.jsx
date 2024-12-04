@@ -17,7 +17,7 @@ const ProductCard = () => {
   const [nutrition, setNutritionFact] = useState(null);
   const [isGiveReviewModalOpen, setIsGiveReviewModalOpen] = useState(false); // Modal visibility state
   const [isSeeReviewModalOpen, setIsSeeReviewModalOpen] = useState(false);
-  const modalRef = useRef(null);
+  const modalRef = useRef();
 
   useEffect(() => {
     // Fetch product details from API

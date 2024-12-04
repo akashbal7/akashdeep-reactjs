@@ -1,0 +1,23 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 522814723398.dkr.ecr.us-east-1.amazonaws.com
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - docker build -t restaurant-frontend-ecr .
+      - docker tag restaurant-frontend-ecr:latest 522814723398.dkr.ecr.us-east-1.amazonaws.com/restaurant-frontend-ecr:latest
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image to ECR...
+      - docker push 522814723398.dkr.ecr.us-east-1.amazonaws.com/restaurant-frontend-ecr:latest
+      - echo Writing imagedefinitions.json file...
+      - printf '[{"name":"%s","imageUri":"%s"}]' "$ECS_SERVICE_NAME" "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:latest" > imagedefinitions.json
+artifacts:
+  files:
+    - imagedefinitions.json
