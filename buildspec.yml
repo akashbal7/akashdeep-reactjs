@@ -5,18 +5,23 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 522814723398.dkr.ecr.us-east-1.amazonaws.com
+      - REPOSITORY_URI=522814723398.dkr.ecr.us-east-1.amazonaws.com/restaurant-frontend-ecr
+      - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
+
   build:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - docker build -t restaurant-frontend-ecr .
-      - docker tag restaurant-frontend-ecr:latest 522814723398.dkr.ecr.us-east-1.amazonaws.com/restaurant-frontend-ecr:latest
+      - docker build -t $REPOSITORY_URI:latest .
+      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image to ECR...
-      - docker push 522814723398.dkr.ecr.us-east-1.amazonaws.com/restaurant-frontend-ecr:latest
+      - docker push $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Writing imagedefinitions.json file...
+      - DOCKER_CONTAINER_NAME=restaurant-frontend-container
       - printf '[{"name":"%s","imageUri":"%s"}]' $DOCKER_CONTAINER_NAME $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       - echo $DOCKER_CONTAINER_NAME
       - echo printing imagedefinitions.json
