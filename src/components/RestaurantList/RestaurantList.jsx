@@ -9,7 +9,7 @@ const RestaurantList = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch(`${API_BASE_URL}/restaurants`);
+        const response = await fetch(`${API_BASE_URL}/health`);
         if (!response.ok) {
           throw new Error("Failed to fetch restaurants");
         }
